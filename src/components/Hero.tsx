@@ -3,9 +3,24 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 
 export default function Hero() {
+  const scrollToExamples = () => {
+    const examplesSection = document.getElementById('how-it-works');
+    examplesSection?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen flex items-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark/95 to-primary/10" />
+      {/* Animated background with gradient and pattern */}
+      <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark/95 to-primary/10">
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" />
+            </pattern>
+            <rect width="100" height="100" fill="url(#grid)" />
+          </svg>
+        </div>
+      </div>
       
       <div className="container mx-auto px-4 pt-20 pb-32 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -18,11 +33,16 @@ export default function Hero() {
               Smarter decisions. Simple tools. Secure profits.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Button size="lg" className="bg-primary hover:bg-primary-dark text-dark font-semibold">
+              <Button size="lg" className="bg-primary hover:bg-primary-dark text-dark font-semibold glow">
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-primary text-primary hover:bg-primary/10 glow"
+                onClick={scrollToExamples}
+              >
                 Learn More
               </Button>
             </div>
