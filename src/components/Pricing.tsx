@@ -56,18 +56,6 @@ export default function Pricing() {
             </Card>
           ))}
         </div>
-        
-        <div className="mt-16 text-center space-y-8">
-          <h3 className="text-2xl font-bold mb-8">Download Our App</h3>
-          <div className="flex justify-center gap-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
-                 alt="Download on App Store" 
-                 className="h-12 glow cursor-pointer" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
-                 alt="Get it on Google Play" 
-                 className="h-12 glow cursor-pointer" />
-          </div>
-        </div>
       </div>
     </section>
   );
