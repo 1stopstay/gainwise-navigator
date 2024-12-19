@@ -9,7 +9,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="min-h-screen flex items-center relative overflow-hidden">
+    <div className="min-h-screen flex items-center relative overflow-hidden pt-16">
       {/* Animated background with gradient and pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark/95 to-primary/10">
         <div className="absolute inset-0 opacity-10">
@@ -21,7 +21,7 @@ export default function Hero() {
           </svg>
         </div>
       </div>
-      
+
       <div className="container mx-auto px-4 pt-20 pb-32 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 animate-fade-up">
