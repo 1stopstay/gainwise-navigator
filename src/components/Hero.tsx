@@ -1,6 +1,6 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Zap, Shield, Coins } from "lucide-react";
 import { Button } from "./ui/button";
-import Coin3D from "./Coin3D";
+import { Card, CardContent } from "./ui/card";
 
 export default function Hero() {
   return (
@@ -28,8 +28,38 @@ export default function Hero() {
             </div>
           </div>
           
-          <div className="lg:block animate-float">
-            <Coin3D />
+          <div className="grid gap-4 md:grid-cols-2 animate-fade-up">
+            <Card className="glass-card glow">
+              <CardContent className="p-6 space-y-4">
+                <Zap className="h-8 w-8 text-primary" />
+                <h3 className="text-xl font-bold font-exo">AI-Powered Signals</h3>
+                <p className="text-gray-300">Get real-time market insights backed by advanced AI algorithms</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="glass-card glow">
+              <CardContent className="p-6 space-y-4">
+                <Shield className="h-8 w-8 text-primary" />
+                <h3 className="text-xl font-bold font-exo">Secure Trading</h3>
+                <p className="text-gray-300">Trade with confidence using our secure DEX integration</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="glass-card glow">
+              <CardContent className="p-6 space-y-4">
+                <Coins className="h-8 w-8 text-primary" />
+                <h3 className="text-xl font-bold font-exo">Profit Tracking</h3>
+                <p className="text-gray-300">Never miss a profitable exit with smart notifications</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="glass-card glow">
+              <CardContent className="p-6 space-y-4">
+                <ArrowRight className="h-8 w-8 text-primary" />
+                <h3 className="text-xl font-bold font-exo">Easy to Use</h3>
+                <p className="text-gray-300">Intuitive interface designed for both beginners and pros</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
