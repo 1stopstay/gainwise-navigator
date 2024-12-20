@@ -54,11 +54,10 @@ export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSte
       }
     }
 
-    // Final target X milestone
+    // Final target X milestone with projected profit and percentage
     if (remainingTokens > 0) {
-      const { targetPrice, futureValue } = calculateTargetX(investment, remainingTokens);
-      const finalProfit = futureValue - (strategy.purchase_price * remainingTokens / 100);
-      totalProfit += finalProfit;
+      const { targetPrice, futureValue, projectedProfit, profitPercentage } = calculateTargetX(investment, remainingTokens);
+      totalProfit += projectedProfit;
       
       milestones.push({
         step: milestones.length + 1,
@@ -68,6 +67,8 @@ export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSte
         profitUSD: totalProfit.toFixed(2),
         sellAmount: futureValue.toFixed(2),
         targetPrice: targetPrice.toFixed(2),
+        projectedProfit: projectedProfit.toFixed(2),
+        profitPercentage: profitPercentage.toFixed(2),
       });
     }
 
@@ -88,6 +89,7 @@ export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSte
 
   const milestones = calculateMilestones();
   const nextMilestone = milestones[0];
+  const finalMilestone = milestones[milestones.length - 1];
 
   return (
     <Card className="glass-card p-6 border-white/10">
@@ -112,6 +114,17 @@ export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSte
             <AlertTitle>Next Milestone</AlertTitle>
             <AlertDescription>
               Sell {nextMilestone.sellPercentage}% of your tokens when {strategy.token_symbol} reaches ${nextMilestone.targetPrice} (${nextMilestone.sellAmount})
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {finalMilestone && finalMilestone.projectedProfit && (
+          <Alert className="bg-primary/10 border-primary mt-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Projected Outcome</AlertTitle>
+            <AlertDescription>
+              If you follow this strategy and {strategy.token_symbol} reaches ${finalMilestone.targetPrice}, 
+              your projected profit will be ${finalMilestone.projectedProfit} ({finalMilestone.profitPercentage}% return)
             </AlertDescription>
           </Alert>
         )}

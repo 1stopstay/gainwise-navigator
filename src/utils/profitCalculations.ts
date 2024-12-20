@@ -62,13 +62,20 @@ export const calculateTargetX = (
 ): {
   targetPrice: number;
   futureValue: number;
+  projectedProfit: number;
+  profitPercentage: number;
 } => {
   const { tokenCost, targetMultiple } = investment;
+  const initialInvestment = calculateAmountInvested(tokenCost, investment.numberOfTokens);
   const targetPrice = tokenCost * targetMultiple;
   const futureValue = targetPrice * remainingTokens;
+  const projectedProfit = futureValue - initialInvestment;
+  const profitPercentage = (projectedProfit / initialInvestment) * 100;
 
   return {
     targetPrice,
     futureValue,
+    projectedProfit,
+    profitPercentage,
   };
 };
