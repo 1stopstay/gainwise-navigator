@@ -1,12 +1,16 @@
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { TrendingUp, TrendingDown, Activity } from "lucide-react";
+import { Activity } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 type IndicatorCardProps = {
   name: string;
   value: number;
   status: string;
   type: "success" | "warning" | "danger" | "neutral";
+  confidenceScore: number;
+  isActive: boolean;
+  onToggle: () => void;
 };
 
 const statusColors = {
@@ -16,7 +20,15 @@ const statusColors = {
   neutral: "text-gray-400",
 };
 
-export const IndicatorCard = ({ name, value, status, type }: IndicatorCardProps) => {
+export const IndicatorCard = ({
+  name,
+  value,
+  status,
+  type,
+  confidenceScore,
+  isActive,
+  onToggle,
+}: IndicatorCardProps) => {
   return (
     <Card className="glass-card p-4 glow">
       <div className="flex items-start justify-between">
@@ -24,11 +36,18 @@ export const IndicatorCard = ({ name, value, status, type }: IndicatorCardProps)
           <Activity className="w-5 h-5 text-primary" />
           <h3 className="font-semibold">{name}</h3>
         </div>
-        <Switch />
+        <Switch checked={isActive} onCheckedChange={onToggle} />
       </div>
       <div className="mt-4">
         <p className={`text-sm ${statusColors[type]}`}>{status}</p>
         <p className="text-2xl font-mono mt-1">{value}</p>
+        <div className="mt-3">
+          <div className="flex justify-between text-xs text-gray-400 mb-1">
+            <span>Confidence</span>
+            <span>{confidenceScore}%</span>
+          </div>
+          <Progress value={confidenceScore} className="h-1" />
+        </div>
       </div>
     </Card>
   );

@@ -57,6 +57,48 @@ export type Database = {
         }
         Relationships: []
       }
+      signals: {
+        Row: {
+          condition: string
+          confidence_score: number | null
+          created_at: string
+          id: string
+          indicator: string
+          is_active: boolean | null
+          name: string
+          token_symbol: string
+          updated_at: string
+          user_id: string
+          value: number | null
+        }
+        Insert: {
+          condition: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          indicator: string
+          is_active?: boolean | null
+          name: string
+          token_symbol: string
+          updated_at?: string
+          user_id: string
+          value?: number | null
+        }
+        Update: {
+          condition?: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          indicator?: string
+          is_active?: boolean | null
+          name?: string
+          token_symbol?: string
+          updated_at?: string
+          user_id?: string
+          value?: number | null
+        }
+        Relationships: []
+      }
       trading_strategies: {
         Row: {
           created_at: string
