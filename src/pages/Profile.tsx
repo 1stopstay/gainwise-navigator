@@ -37,7 +37,9 @@ const Profile = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <Card className="glass-card p-6">
-              <ProfileOverview profile={profile} />
+              <div className="space-y-4">
+                {profile && <ProfileOverview profile={profile} />}
+              </div>
             </Card>
             <Card className="glass-card p-6">
               <h2 className="text-xl font-semibold mb-4">Active Alerts</h2>

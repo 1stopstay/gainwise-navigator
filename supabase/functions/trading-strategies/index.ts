@@ -23,10 +23,9 @@ serve(async (req) => {
 
     // For GET requests
     if (method === 'GET') {
-      const body = await req.json();
-      const user_id = body.user_id;
+      const { user_id } = await req.json().catch(() => ({}));
       
-      console.log('GET request body:', body);
+      console.log('GET request user_id:', user_id);
       
       if (!user_id) {
         throw new Error('User ID is required');
@@ -49,7 +48,8 @@ serve(async (req) => {
 
     // For POST requests
     if (method === 'POST') {
-      const { token_symbol, purchase_price, profit_goal, user_id } = await req.json();
+      const body = await req.json().catch(() => ({}));
+      const { token_symbol, purchase_price, profit_goal, user_id } = body;
       
       console.log('POST request data:', { token_symbol, purchase_price, profit_goal, user_id });
       
@@ -77,7 +77,7 @@ serve(async (req) => {
 
     // For DELETE requests
     if (method === 'DELETE') {
-      const { id, user_id } = await req.json();
+      const { id, user_id } = await req.json().catch(() => ({}));
       
       console.log('DELETE request data:', { id, user_id });
       
@@ -100,7 +100,8 @@ serve(async (req) => {
 
     // For PUT requests
     if (method === 'PUT') {
-      const { id, token_symbol, purchase_price, profit_goal, status, user_id } = await req.json();
+      const body = await req.json().catch(() => ({}));
+      const { id, token_symbol, purchase_price, profit_goal, status, user_id } = body;
       
       console.log('PUT request data:', { id, token_symbol, purchase_price, profit_goal, status, user_id });
       
