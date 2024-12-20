@@ -24,15 +24,15 @@ export default function Hero() {
 
       <div className="container max-w-7xl mx-auto px-6 sm:px-8 py-16 lg:py-24 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="space-y-8 animate-fade-up">
+          <div className="space-y-8 animate-fade-up text-center lg:text-left">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-exo">
               Take Control of Your
               <span className="gradient-text block mt-2">Crypto Profits</span>
             </h1>
-            <p className="text-xl text-gray-300 max-w-2xl">
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0">
               Smarter decisions. Simple tools. Secure profits.
             </p>
-            <div className="flex flex-wrap gap-4 pt-4 justify-center">
+            <div className="flex flex-wrap gap-4 pt-4 justify-center lg:justify-start">
               <Button size="lg" className="bg-primary hover:bg-primary-dark text-dark font-semibold glow">
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
