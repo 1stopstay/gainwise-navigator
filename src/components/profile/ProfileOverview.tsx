@@ -33,6 +33,16 @@ const ProfileOverview = ({ profile }: ProfileOverviewProps) => {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
+      <Card className="glass-card p-6">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Bell className="w-5 h-5 text-primary" />
+          Active Alerts
+        </h2>
+        <div className="h-[300px] flex items-center justify-center text-gray-400">
+          No active alerts
+        </div>
+      </Card>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat) => (
           <Card 
