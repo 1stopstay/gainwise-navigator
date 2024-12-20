@@ -8,11 +8,16 @@ import { NavigationLinks } from "./NavigationLinks";
 import { MobileMenu } from "./MobileMenu";
 import { useToast } from "@/hooks/use-toast";
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 export default function Navigation() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -20,7 +25,7 @@ export default function Navigation() {
       // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
       // Stash the event so it can be triggered later
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -41,7 +46,7 @@ export default function Navigation() {
     }
 
     // Show the install prompt
-    deferredPrompt.prompt();
+    await deferredPrompt.prompt();
     
     // Wait for the user to respond to the prompt
     const choiceResult = await deferredPrompt.userChoice;
