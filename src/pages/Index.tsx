@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import HowItWorks from "@/components/HowItWorks";
@@ -8,15 +10,34 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 const Index = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if we have a section to scroll to from navigation
+    const state = location.state as { scrollTo?: string };
+    if (state?.scrollTo) {
+      const element = document.getElementById(state.scrollTo);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // Small delay to ensure components are rendered
+      }
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-dark">
       <Navigation />
       <Hero />
       <Benefits />
       <HowItWorks />
-      <Features />
+      <div id="features">
+        <Features />
+      </div>
       <Testimonials />
-      <Pricing />
+      <div id="pricing">
+        <Pricing />
+      </div>
       <Footer />
     </div>
   );
