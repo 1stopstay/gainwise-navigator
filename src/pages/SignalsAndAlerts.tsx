@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bell, HelpCircle, Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,8 +15,17 @@ import { supabase } from "@/integrations/supabase/client";
 const SignalsAndAlerts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const { data: { user } } = await supabase.auth.getUser();
-  const { data: profile } = useProfile(user?.id);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const { data: profile } = useProfile(userId);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id);
+    };
+
+    getUser();
+  }, []);
 
   return (
     <div className="min-h-screen bg-dark flex">
