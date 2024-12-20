@@ -11,6 +11,8 @@ import Navigation from "./components/Navigation";
 import "./App.css";
 
 function App() {
+  console.log("Rendering App component"); // Debug log
+
   return (
     <Router>
       <Routes>

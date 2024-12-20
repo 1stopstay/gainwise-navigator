@@ -24,8 +24,10 @@ const Index = () => {
     }
   }, [location]);
 
+  console.log("Rendering Index page"); // Debug log
+
   return (
-    <div className="min-h-screen bg-dark">
+    <main className="min-h-screen bg-dark">
       <Hero />
       <Benefits />
       <HowItWorks />
@@ -37,7 +39,7 @@ const Index = () => {
         <Pricing />
       </div>
       <Footer />
-    </div>
+    </main>
   );
 };
 
