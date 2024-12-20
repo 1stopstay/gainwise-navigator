@@ -1,12 +1,7 @@
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Button } from "./ui/button";
 import { Menu, LogIn, Download } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { NavigationMenu } from "./ui/navigation-menu";
 import { NavigationLinks } from "./NavigationLinks";
 
 interface MobileMenuProps {
@@ -17,33 +12,30 @@ interface MobileMenuProps {
 }
 
 export const MobileMenu = ({ isOpen, onOpenChange, onNavigate, onSectionClick }: MobileMenuProps) => {
-  const handleLoginClick = () => {
-    onNavigate('/login');
-    onOpenChange(false);
-  };
-
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="h-6 w-6" />
+          <Menu className="w-5 h-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-80 sm:w-96 bg-dark/95 backdrop-blur-xl border-white/10">
-        <SheetHeader>
-          <SheetTitle className="text-left font-exo gradient-text">Menu</SheetTitle>
-        </SheetHeader>
-        <div className="mt-8 flex flex-col gap-6">
-          <NavigationLinks 
-            onItemClick={onSectionClick}
-            className="flex-col items-start gap-6"
-          />
-          <div className="flex flex-col gap-4 mt-4">
+      <SheetContent side="right" className="w-[300px] bg-dark/95 border-white/10">
+        <div className="flex flex-col gap-6 mt-6">
+          <NavigationMenu className="flex">
+            <NavigationLinks 
+              className="flex-col gap-4" 
+              onItemClick={(sectionId) => {
+                onSectionClick(sectionId);
+                onOpenChange(false);
+              }}
+            />
+          </NavigationMenu>
+          <div className="flex flex-col gap-4">
             <Button 
               variant="ghost" 
-              size="sm"
-              className="w-full justify-start hover:text-accent transition-colors duration-300"
-              onClick={handleLoginClick}
+              size="sm" 
+              className="w-full justify-start"
+              onClick={() => onNavigate('/login')}
             >
               <LogIn className="w-4 h-4 mr-2" />
               Login
@@ -51,11 +43,6 @@ export const MobileMenu = ({ isOpen, onOpenChange, onNavigate, onSectionClick }:
             <Button 
               size="sm"
               className="w-full justify-start bg-primary hover:bg-primary-dark text-dark font-semibold"
-              onClick={() => {
-                // Trigger the install prompt through the browser event
-                const event = new Event('beforeinstallprompt');
-                window.dispatchEvent(event);
-              }}
             >
               <Download className="w-4 h-4 mr-2" />
               Install App

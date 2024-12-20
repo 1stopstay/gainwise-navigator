@@ -2,70 +2,15 @@ import { LogIn, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu } from "@/components/ui/navigation-menu";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { NavigationLinks } from "./NavigationLinks";
 import { MobileMenu } from "./MobileMenu";
-import { useToast } from "@/hooks/use-toast";
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
 
 export default function Navigation() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: Event) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
-      e.preventDefault();
-      // Stash the event so it can be triggered later
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      toast({
-        title: "Installation not available",
-        description: "The app is either already installed or cannot be installed on this device.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Show the install prompt
-    await deferredPrompt.prompt();
-    
-    // Wait for the user to respond to the prompt
-    const choiceResult = await deferredPrompt.userChoice;
-    
-    if (choiceResult.outcome === 'accepted') {
-      toast({
-        title: "Installation successful",
-        description: "The app has been installed successfully!",
-      });
-    } else {
-      toast({
-        title: "Installation cancelled",
-        description: "You can install the app later from the same button.",
-      });
-    }
-    
-    // Clear the deferredPrompt for the next time
-    setDeferredPrompt(null);
-  };
 
   const scrollToSection = (sectionId: string) => {
     if (location.pathname !== '/') {
@@ -130,7 +75,6 @@ export default function Navigation() {
                 "bg-primary hover:bg-primary-dark text-dark font-semibold hidden md:flex items-center gap-2 glow",
                 "transition-all duration-300 hover:scale-105"
               )}
-              onClick={handleInstallClick}
             >
               <Download className="w-4 h-4" />
               Install App
