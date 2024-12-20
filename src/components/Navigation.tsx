@@ -13,11 +13,19 @@ export default function Navigation() {
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
-    section?.scrollIntoView({ behavior: 'smooth' });
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+      setIsOpen(false); // Close mobile menu after clicking
+    }
   };
 
   const handleLoginClick = () => {
     navigate('/login');
+  };
+
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate('/');
   };
 
   return (
@@ -25,7 +33,13 @@ export default function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Left: Logo/Name */}
-          <div className="flex-shrink-0">
+          <div 
+            className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity duration-200"
+            onClick={handleLogoClick}
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => e.key === 'Enter' && handleLogoClick()}
+          >
             <span className="text-xl font-bold font-exo gradient-text">GainWise</span>
           </div>
 
