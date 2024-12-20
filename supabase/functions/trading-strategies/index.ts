@@ -1,0 +1,131 @@
+import { serve } from 'https://deno.fresh.dev/std@v1/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+interface TradingStrategy {
+  id?: string;
+  user_id: string;
+  token_symbol: string;
+  purchase_price: number;
+  profit_goal: number;
+  status?: string;
+}
+
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { method, url } = req;
+    const path = new URL(url).pathname.split('/').pop();
+    
+    console.log(`Processing ${method} request for path: ${path}`);
+
+    // Create strategy
+    if (method === 'POST' && !path) {
+      const { token_symbol, purchase_price, profit_goal, user_id } = await req.json();
+      console.log('Creating strategy:', { token_symbol, purchase_price, profit_goal, user_id });
+
+      const { data, error } = await supabase
+        .from('trading_strategies')
+        .insert({
+          token_symbol,
+          purchase_price,
+          profit_goal,
+          user_id,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      return new Response(JSON.stringify(data), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Update strategy
+    if (method === 'PUT' && path) {
+      const { token_symbol, purchase_price, profit_goal, status } = await req.json();
+      console.log('Updating strategy:', { id: path, token_symbol, purchase_price, profit_goal, status });
+
+      const { data, error } = await supabase
+        .from('trading_strategies')
+        .update({
+          token_symbol,
+          purchase_price,
+          profit_goal,
+          status,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', path)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify(data), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Delete strategy
+    if (method === 'DELETE' && path) {
+      console.log('Deleting strategy:', path);
+      
+      const { error } = await supabase
+        .from('trading_strategies')
+        .delete()
+        .eq('id', path);
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Get strategies for user
+    if (method === 'GET') {
+      const userId = new URL(url).searchParams.get('userId');
+      console.log('Fetching strategies for user:', userId);
+
+      if (!userId) {
+        throw new Error('User ID is required');
+      }
+
+      const { data, error } = await supabase
+        .from('trading_strategies')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify(data), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    throw new Error(`Unsupported method: ${method}`);
+
+  } catch (error) {
+    console.error('Error processing request:', error);
+    
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+});

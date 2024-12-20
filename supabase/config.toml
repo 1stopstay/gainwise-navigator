@@ -1,1 +1,4 @@
 project_id = "zwnmwhzoynstrmxqituh"
+
+[functions.trading-strategies]
+verify_jwt = true
