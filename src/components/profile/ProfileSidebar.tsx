@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,32 +8,34 @@ import type { Database } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 interface ProfileSidebarProps {
-  profile: Profile | null;
+  profile: Profile;
 }
 
 const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const [isHovered, setIsHovered] = useState("");
-  const [isCopied, setIsCopied] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(!isMobile);
 
-  const handleLogout = async () => {
+  useEffect(() => {
+    setIsOpen(!isMobile);
+  }, [isMobile]);
+
+  const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       toast({
-        title: "Error",
-        description: "Failed to log out. Please try again.",
+        title: "Error signing out",
+        description: error.message,
         variant: "destructive",
       });
-      return;
+    } else {
+      navigate("/");
     }
-    navigate("/");
   };
 
   const navItems = [
@@ -46,123 +47,96 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
     { icon: Settings, label: "Settings", path: "/profile/settings" },
   ];
 
-  // Mock wallet address - in real app, get this from your wallet connection
-  const walletAddress = "0x1234...5678";
-
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(walletAddress);
-      setIsCopied(true);
-      toast({
-        title: "Copied!",
-        description: "Wallet address copied to clipboard",
-      });
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: "Failed to copy address",
-        variant: "destructive",
-      });
-    }
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
   };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const sidebarContent = (
-    <>
-      <div className="p-6 text-center border-b border-white/10">
-        <Avatar className="w-20 h-20 mx-auto mb-4 ring-2 ring-primary ring-offset-2 ring-offset-dark transition-all duration-300 hover:ring-4">
-          <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.username || 'default'}`} />
-          <AvatarFallback>
-            <User className="w-8 h-8" />
-          </AvatarFallback>
-        </Avatar>
-        <h2 className="text-xl font-bold gradient-text mb-2">{profile?.username || "User"}</h2>
-        
-        <div 
-          className="flex items-center justify-center gap-2 px-3 py-1.5 bg-white/5 rounded-full text-sm text-gray-300 hover:text-white transition-colors cursor-pointer"
-          onClick={copyToClipboard}
-        >
-          <span>{walletAddress}</span>
-          <Copy className={cn(
-            "w-4 h-4 transition-all",
-            isCopied ? "text-primary" : "text-gray-400"
-          )} />
-        </div>
-      </div>
-
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {navItems.map((item) => (
-            <li key={item.label}>
-              <Link
-                to={item.path}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300",
-                  "hover:bg-primary/10 hover:text-primary hover:translate-x-1",
-                  "focus:outline-none focus:ring-2 focus:ring-primary/50",
-                  location.pathname === item.path ? "bg-primary/10 text-primary" : "text-gray-300",
-                  isHovered === item.label ? "bg-primary/10 text-primary" : ""
-                )}
-                onMouseEnter={() => setIsHovered(item.label)}
-                onMouseLeave={() => setIsHovered("")}
-                onClick={() => isMobile && setIsMobileMenuOpen(false)}
-              >
-                <item.icon className="w-5 h-5" />
-                <span>{item.label}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="p-4 border-t border-white/10">
-        <Button
-          onClick={handleLogout}
-          className={cn(
-            "w-full bg-red-500/10 hover:bg-red-500/20 text-red-500",
-            "border border-red-500/20 hover:border-red-500/30",
-            "transition-all duration-300 gap-2"
-          )}
-        >
-          <LogOut className="w-4 h-4" />
-          Logout
-        </Button>
-      </div>
-    </>
-  );
-
-  // Mobile toggle button
-  const mobileToggle = isMobile && (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="fixed top-4 left-4 z-50 md:hidden"
-      onClick={toggleMobileMenu}
-    >
-      {isMobileMenuOpen ? (
-        <X className="h-6 w-6" />
-      ) : (
-        <Menu className="h-6 w-6" />
-      )}
-    </Button>
-  );
 
   return (
     <>
-      {mobileToggle}
-      <aside className={cn(
-        "fixed left-0 top-0 h-screen bg-dark/50 backdrop-blur-xl border-r border-white/10 flex flex-col",
-        "transition-all duration-300 ease-in-out",
-        isMobile ? (
-          isMobileMenuOpen ? "w-[250px] translate-x-0" : "w-[250px] -translate-x-full"
-        ) : "w-[250px]",
-        "md:translate-x-0"
-      )}>
-        {sidebarContent}
+      {/* Mobile Toggle Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="fixed top-4 left-4 z-50 md:hidden"
+        onClick={toggleSidebar}
+      >
+        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </Button>
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 z-40 h-screen w-64 transform bg-dark border-r border-white/10 transition-transform duration-200 ease-in-out",
+          {
+            "-translate-x-full": !isOpen,
+            "translate-x-0": isOpen,
+          }
+        )}
+      >
+        {/* Profile Section */}
+        <div className="flex flex-col items-center justify-center p-6 border-b border-white/10">
+          <div className="relative">
+            <User className="w-16 h-16 text-primary" />
+          </div>
+          <h2 className="mt-4 text-lg font-semibold">{profile.username || 'Anonymous'}</h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-2 text-xs text-muted-foreground hover:text-primary"
+            onClick={() => {
+              navigator.clipboard.writeText(profile.id);
+              toast({
+                title: "Copied!",
+                description: "User ID copied to clipboard",
+              });
+            }}
+          >
+            <Copy className="w-3 h-3 mr-1" />
+            Copy ID
+          </Button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="p-4">
+          <ul className="space-y-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              return (
+                <li key={item.path}>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "w-full justify-start",
+                      isActive && "bg-primary/10 text-primary hover:bg-primary/20"
+                    )}
+                    onClick={() => {
+                      navigate(item.path);
+                      if (isMobile) {
+                        setIsOpen(false);
+                      }
+                    }}
+                  >
+                    <Icon className="mr-2 h-4 w-4" />
+                    {item.label}
+                  </Button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Sign Out Button */}
+        <div className="absolute bottom-4 left-4 right-4">
+          <Button
+            variant="ghost"
+            className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-500/10"
+            onClick={handleSignOut}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
       </aside>
     </>
   );
