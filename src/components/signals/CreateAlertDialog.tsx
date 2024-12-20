@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { useSignals } from "@/hooks/useSignals";
+import { useAlerts } from "@/hooks/useAlerts";
 
 type CreateAlertDialogProps = {
   open: boolean;
@@ -27,24 +27,36 @@ export const CreateAlertDialog = ({
   open,
   onOpenChange,
 }: CreateAlertDialogProps) => {
-  const { createSignal } = useSignals();
-  const [indicator, setIndicator] = useState<string>("");
-  const [condition, setCondition] = useState<string>("");
-  const [value, setValue] = useState<string>("");
-  const [tokenSymbol, setTokenSymbol] = useState<string>("");
+  const { createAlert } = useAlerts();
+  const [name, setName] = useState("");
+  const [symbol, setSymbol] = useState("");
+  const [indicator, setIndicator] = useState("");
+  const [condition, setCondition] = useState("");
+  const [value, setValue] = useState("");
   const [isEnabled, setIsEnabled] = useState(true);
 
   const handleSubmit = async () => {
-    await createSignal.mutateAsync({
-      name: `${indicator} Alert for ${tokenSymbol}`,
-      indicator: indicator as any,
-      condition: condition as any,
+    await createAlert.mutateAsync({
+      name,
+      symbol: symbol.toUpperCase(),
+      indicator,
+      condition,
       value: Number(value),
-      token_symbol: tokenSymbol,
       is_active: isEnabled,
-      confidence_score: 0,
+      notification_preferences: {
+        email: true,
+        push: true,
+      },
     });
+    
     onOpenChange(false);
+    // Reset form
+    setName("");
+    setSymbol("");
+    setIndicator("");
+    setCondition("");
+    setValue("");
+    setIsEnabled(true);
   };
 
   return (
@@ -55,11 +67,19 @@ export const CreateAlertDialog = ({
         </DialogHeader>
         <div className="space-y-6 py-4">
           <div className="space-y-2">
+            <Label>Alert Name</Label>
+            <Input
+              placeholder="Enter alert name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
             <Label>Token Symbol</Label>
             <Input
               placeholder="Enter token symbol (e.g., BTC)"
-              value={tokenSymbol}
-              onChange={(e) => setTokenSymbol(e.target.value.toUpperCase())}
+              value={symbol}
+              onChange={(e) => setSymbol(e.target.value.toUpperCase())}
             />
           </div>
           <div className="space-y-2">
@@ -109,9 +129,9 @@ export const CreateAlertDialog = ({
           <Button 
             className="w-full" 
             onClick={handleSubmit}
-            disabled={!indicator || !condition || !value || !tokenSymbol}
+            disabled={createAlert.isPending || !name || !indicator || !condition || !value || !symbol}
           >
-            Create Alert
+            {createAlert.isPending ? "Creating..." : "Create Alert"}
           </Button>
         </div>
       </DialogContent>

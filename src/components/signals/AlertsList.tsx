@@ -1,24 +1,18 @@
 import { Bell, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const alerts = [
-  {
-    id: 1,
-    indicator: "RSI",
-    condition: "Above",
-    value: 70,
-    status: "Active",
-  },
-  {
-    id: 2,
-    indicator: "MACD",
-    condition: "Crossover",
-    value: 0,
-    status: "Triggered",
-  },
-];
+import { useAlerts } from "@/hooks/useAlerts";
 
 export const AlertsList = () => {
+  const { alerts, deleteAlert } = useAlerts();
+
+  if (!alerts?.length) {
+    return (
+      <div className="text-center text-gray-400 py-4">
+        No alerts yet. Create one to get started!
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {alerts.map((alert) => (
@@ -30,16 +24,14 @@ export const AlertsList = () => {
             <Bell className="w-5 h-5 text-primary" />
             <div>
               <p className="text-sm">
-                {alert.indicator} {alert.condition} {alert.value}
+                {alert.name} - {alert.indicator} {alert.condition} {alert.value}
               </p>
               <p
                 className={`text-xs ${
-                  alert.status === "Triggered"
-                    ? "text-yellow-400"
-                    : "text-green-400"
+                  alert.is_active ? "text-green-400" : "text-yellow-400"
                 }`}
               >
-                {alert.status}
+                {alert.is_active ? "Active" : "Inactive"}
               </p>
             </div>
           </div>
@@ -47,7 +39,12 @@ export const AlertsList = () => {
             <Button variant="outline" size="icon">
               <Edit2 className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="icon">
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={() => deleteAlert.mutate(alert.id)}
+              disabled={deleteAlert.isPending}
+            >
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
