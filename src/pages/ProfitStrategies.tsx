@@ -13,6 +13,7 @@ const ProfitStrategies = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -26,6 +27,13 @@ const ProfitStrategies = () => {
         navigate("/login");
       } else {
         setUserId(session.user.id);
+        // Fetch profile data
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        setProfile(profileData);
       }
     };
     
@@ -34,7 +42,7 @@ const ProfitStrategies = () => {
 
   const { data: strategies, isLoading } = useTradingStrategies(userId);
 
-  if (isLoading) {
+  if (isLoading || !profile) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-dark">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div>
@@ -50,7 +58,7 @@ const ProfitStrategies = () => {
 
   return (
     <div className="flex min-h-screen bg-dark">
-      <ProfileSidebar />
+      <ProfileSidebar profile={profile} />
       <main className="flex-1 p-8 ml-[250px]">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
