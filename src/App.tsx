@@ -13,16 +13,25 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <Navigation />
       <Routes>
-        <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/settings" element={<Settings />} />
-        <Route path="/swap" element={<Swap />} />
-        <Route path="/signals" element={<SignalsAndAlerts />} />
-        <Route path="/profit-strategies" element={<ProfitStrategies />} />
-        <Route path="/scanner" element={<CryptoScanner />} />
+        <Route
+          path="*"
+          element={
+            <>
+              <Navigation />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile/settings" element={<Settings />} />
+                <Route path="/swap" element={<Swap />} />
+                <Route path="/signals" element={<SignalsAndAlerts />} />
+                <Route path="/profit-strategies" element={<ProfitStrategies />} />
+                <Route path="/scanner" element={<CryptoScanner />} />
+              </Routes>
+            </>
+          }
+        />
       </Routes>
     </Router>
   );
