@@ -105,17 +105,17 @@ serve(async (req) => {
 
     // Get strategies for user
     if (method === 'GET') {
-      const userId = url.searchParams.get('userId');
-      console.log('Fetching strategies for user:', userId);
+      const user_id = url.searchParams.get('user_id'); // Changed from userId to user_id for consistency
+      console.log('Fetching strategies for user:', user_id);
 
-      if (!userId) {
+      if (!user_id) {
         throw new Error('User ID is required');
       }
 
       const { data, error } = await supabase
         .from('trading_strategies')
         .select('*')
-        .eq('user_id', userId)
+        .eq('user_id', user_id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
