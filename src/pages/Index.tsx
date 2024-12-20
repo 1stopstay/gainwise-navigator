@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Loader, AlertCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import HowItWorks from "@/components/HowItWorks";
@@ -8,26 +10,70 @@ import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import ParticlesBackground from "@/components/ParticlesBackground";
 
 const Index = () => {
   const location = useLocation();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if we have a section to scroll to from navigation
-    const state = location.state as { scrollTo?: string };
-    if (state?.scrollTo) {
-      const element = document.getElementById(state.scrollTo);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 100); // Small delay to ensure components are rendered
+    console.log("Index page mounting...");
+    
+    try {
+      // Check if we have a section to scroll to from navigation
+      const state = location.state as { scrollTo?: string };
+      if (state?.scrollTo) {
+        console.log("Scrolling to section:", state.scrollTo);
+        const element = document.getElementById(state.scrollTo);
+        if (element) {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }, 100); // Small delay to ensure components are rendered
+        }
       }
+      
+      // Simulate checking if all components are loaded
+      const timeout = setTimeout(() => {
+        console.log("All components loaded successfully");
+        setIsLoading(false);
+      }, 1000);
+
+      return () => clearTimeout(timeout);
+    } catch (err) {
+      console.error("Error in Index page:", err);
+      setError("Something went wrong while loading the page");
+      setIsLoading(false);
+      
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load the page. Please try refreshing.",
+      });
     }
-  }, [location]);
+  }, [location, toast]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-dark flex items-center justify-center">
+        <Loader className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-dark flex flex-col items-center justify-center gap-4">
+        <AlertCircle className="w-12 h-12 text-destructive" />
+        <p className="text-destructive">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-dark">
-      <Navigation />
+      <ParticlesBackground />
       <div id="home">
         <Hero />
       </div>
