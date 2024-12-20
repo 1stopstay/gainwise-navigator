@@ -14,21 +14,17 @@ interface MilestoneHeaderProps {
 
 export const MilestoneHeader = ({ tokenSymbol, purchasePrice, profitGoal }: MilestoneHeaderProps) => {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <DollarSign className="h-4 w-4 text-primary" />
-          <span className="font-semibold">{tokenSymbol}</span>
-        </div>
-        <span className="text-muted-foreground">|</span>
-        <div className="flex items-center gap-2">
-          <span>${purchasePrice.toLocaleString()}</span>
-        </div>
-        <span className="text-muted-foreground">|</span>
-        <div className="flex items-center gap-2 whitespace-nowrap">
-          <Target className="h-4 w-4 text-primary" />
-          <span>{profitGoal}x</span>
-        </div>
+    <div className="flex flex-wrap items-center gap-4">
+      <div className="flex items-center gap-2">
+        <DollarSign className="h-4 w-4 text-primary" />
+        <span className="font-semibold">{tokenSymbol}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span>${purchasePrice.toLocaleString()}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <Target className="h-4 w-4 text-primary" />
+        <span>{profitGoal}x</span>
       </div>
       <TooltipProvider>
         <Tooltip>
