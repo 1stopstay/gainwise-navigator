@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Activity } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useSignals } from "@/hooks/useSignals";
 
 type IndicatorCardProps = {
   name: string;
@@ -29,6 +30,17 @@ export const IndicatorCard = ({
   isActive,
   onToggle,
 }: IndicatorCardProps) => {
+  const { updateSignal } = useSignals();
+
+  const handleToggle = async () => {
+    try {
+      console.log(`Toggling ${name} indicator to ${!isActive}`);
+      onToggle();
+    } catch (error) {
+      console.error(`Error toggling ${name} indicator:`, error);
+    }
+  };
+
   return (
     <Card className="glass-card p-4 glow">
       <div className="flex items-start justify-between">
@@ -36,7 +48,11 @@ export const IndicatorCard = ({
           <Activity className="w-5 h-5 text-primary" />
           <h3 className="font-semibold">{name}</h3>
         </div>
-        <Switch checked={isActive} onCheckedChange={onToggle} />
+        <Switch 
+          checked={isActive} 
+          onCheckedChange={handleToggle}
+          aria-label={`Toggle ${name} indicator`}
+        />
       </div>
       <div className="mt-4">
         <p className={`text-sm ${statusColors[type]}`}>{status}</p>
