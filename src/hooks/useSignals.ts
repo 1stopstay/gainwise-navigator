@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 export type Signal = {
   id: string;
+  user_id: string;
   name: string;
   indicator: "RSI" | "MACD" | "BOLLINGER_BANDS" | "EMA";
   condition: "ABOVE" | "BELOW" | "CROSS_ABOVE" | "CROSS_BELOW";
@@ -44,11 +45,14 @@ export const useSignals = () => {
 
   // Create signal
   const createSignal = useMutation({
-    mutationFn: async (signal: Omit<Signal, "id" | "created_at">) => {
+    mutationFn: async (signal: Omit<Signal, "id" | "created_at" | "user_id">) => {
       console.log("Creating signal:", signal);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user found");
+
       const { data, error } = await supabase
         .from("signals")
-        .insert(signal)
+        .insert({ ...signal, user_id: user.id })
         .select()
         .single();
 

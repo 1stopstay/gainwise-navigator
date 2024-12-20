@@ -10,11 +10,13 @@ import { CreateAlertDialog } from "@/components/signals/CreateAlertDialog";
 import { IndicatorCard } from "@/components/signals/IndicatorCard";
 import ProfileSidebar from "@/components/profile/ProfileSidebar";
 import { useProfile } from "@/hooks/useProfile";
+import { supabase } from "@/integrations/supabase/client";
 
 const SignalsAndAlerts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const { profile } = useProfile();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = useProfile(user?.id);
 
   return (
     <div className="min-h-screen bg-dark flex">
