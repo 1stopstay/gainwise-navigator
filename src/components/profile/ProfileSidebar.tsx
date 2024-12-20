@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Settings, LogOut, Home, Wallet, LineChart, Bell, Copy, Menu, X } from "lucide-react";
+import { User, Settings, LogOut, Home, Wallet, LineChart, Bell, Copy, Menu, X, Scan } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -39,6 +39,7 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
 
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/profile" },
+    { icon: Scan, label: "Scanner", path: "/scanner" },
     { icon: Wallet, label: "Swap", path: "/swap" },
     { icon: LineChart, label: "Profit Strategies", path: "/profit-strategies" },
     { icon: Bell, label: "Signals & Alerts", path: "/signals" },
