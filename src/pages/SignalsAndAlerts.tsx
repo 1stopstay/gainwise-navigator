@@ -34,25 +34,25 @@ const SignalsAndAlerts = () => {
   const bbSignal = signals.find(s => s.indicator === "BOLLINGER_BANDS");
 
   return (
-    <div className="min-h-screen bg-dark flex">
+    <div className="min-h-screen bg-dark flex flex-col md:flex-row">
       <ProfileSidebar profile={profile} />
       
-      <div className="flex-1 pl-[250px]">
-        <div className="container mx-auto px-4 py-8">
+      <div className="flex-1 md:pl-[250px] w-full">
+        <div className="container mx-auto px-4 py-6 md:py-8">
           {/* Header Section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
+          <div className="mb-6 md:mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h1 className="text-4xl font-bold gradient-text mb-2">
+                <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
                   Signals & Alerts
                 </h1>
-                <p className="text-gray-400">
+                <p className="text-gray-400 text-sm md:text-base">
                   Stay ahead with real-time trading signals and trend alerts
                 </p>
               </div>
               <Button
                 onClick={() => setShowCreateAlert(true)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-full sm:w-auto"
               >
                 <Bell className="w-4 h-4" />
                 Create Alert
@@ -60,7 +60,7 @@ const SignalsAndAlerts = () => {
             </div>
 
             {/* Search and Filters */}
-            <div className="mt-6 flex gap-4">
+            <div className="mt-4 md:mt-6 flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
@@ -70,14 +70,14 @@ const SignalsAndAlerts = () => {
                   className="pl-10"
                 />
               </div>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" className="w-10 h-10 sm:w-auto sm:h-auto">
                 <HelpCircle className="w-4 h-4" />
               </Button>
             </div>
           </div>
 
           {/* Indicators Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 md:mb-8">
             {rsiSignal && (
               <IndicatorCard
                 id={rsiSignal.id}
@@ -117,13 +117,13 @@ const SignalsAndAlerts = () => {
           </div>
 
           {/* Alerts and Feed Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
             <Card className="glass-card p-4">
-              <h2 className="text-xl font-semibold mb-4">Active Alerts</h2>
+              <h2 className="text-lg md:text-xl font-semibold mb-4">Active Alerts</h2>
               <AlertsList />
             </Card>
             <Card className="glass-card p-4">
-              <h2 className="text-xl font-semibold mb-4">Signals Feed</h2>
+              <h2 className="text-lg md:text-xl font-semibold mb-4">Signals Feed</h2>
               <SignalsFeed />
             </Card>
           </div>

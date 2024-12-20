@@ -60,20 +60,21 @@ export const IndicatorCard = ({
 
   return (
     <Card className="glass-card p-4 glow">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <Activity className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold">{name}</h3>
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <Activity className="w-5 h-5 text-primary shrink-0" />
+          <h3 className="font-semibold truncate">{name}</h3>
         </div>
         <Switch 
           checked={isActive} 
           onCheckedChange={handleToggle}
           aria-label={`Toggle ${name} indicator`}
+          className="shrink-0"
         />
       </div>
       <div className="mt-4">
-        <p className={`text-sm ${statusColors[type]}`}>{status}</p>
-        <p className="text-2xl font-mono mt-1">{value}</p>
+        <p className={`text-sm ${statusColors[type]} break-words`}>{status}</p>
+        <p className="text-xl md:text-2xl font-mono mt-1">{value}</p>
         <div className="mt-3">
           <div className="flex justify-between text-xs text-gray-400 mb-1">
             <span>Confidence</span>
