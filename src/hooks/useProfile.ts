@@ -1,5 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
+
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 export const useProfile = (userId: string | undefined) => {
   return useQuery({
@@ -13,7 +16,7 @@ export const useProfile = (userId: string | undefined) => {
         .single();
       
       if (error) throw error;
-      return data;
+      return data as Profile;
     },
     enabled: !!userId,
   });
@@ -34,10 +37,12 @@ export const useUpdateProfile = () => {
         .single();
         
       if (error) throw error;
-      return data;
+      return data as Profile;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['profile', data.id] });
+      if (data) {
+        queryClient.invalidateQueries({ queryKey: ['profile', data.id] });
+      }
     },
   });
 };

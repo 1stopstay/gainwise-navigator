@@ -1,7 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 
-interface TradingStrategy {
+type TradingStrategy = Database['public']['Tables']['trading_strategies']['Row'];
+type NewTradingStrategy = Omit<TradingStrategy, 'id' | 'created_at' | 'updated_at'>;
+
+interface CreateTradingStrategyInput {
   purchase_price: number;
   profit_goal: number;
   token_symbol: string;
@@ -19,7 +23,7 @@ export const useTradingStrategies = (userId: string | undefined) => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as TradingStrategy[];
     },
     enabled: !!userId,
   });
@@ -29,24 +33,28 @@ export const useCreateTradingStrategy = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (strategy: TradingStrategy) => {
+    mutationFn: async (strategy: CreateTradingStrategyInput) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
       
+      const newStrategy: NewTradingStrategy = {
+        ...strategy,
+        user_id: user.id,
+      };
+      
       const { data, error } = await supabase
         .from('trading_strategies')
-        .insert({
-          ...strategy,
-          user_id: user.id,
-        })
+        .insert(newStrategy)
         .select()
         .single();
         
       if (error) throw error;
-      return data;
+      return data as TradingStrategy;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['trading-strategies', data.user_id] });
+      if (data) {
+        queryClient.invalidateQueries({ queryKey: ['trading-strategies', data.user_id] });
+      }
     },
   });
 };
