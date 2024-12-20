@@ -1,4 +1,4 @@
-import { serve } from 'https://deno.fresh.dev/std@v1/http/server.ts';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const corsHeaders = {
@@ -27,13 +27,12 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { method, url } = req;
-    const path = new URL(url).pathname.split('/').pop();
+    const { method } = req;
     
-    console.log(`Processing ${method} request for path: ${path}`);
+    console.log(`Processing ${method} request`);
 
     // Create strategy
-    if (method === 'POST' && !path) {
+    if (method === 'POST') {
       const { token_symbol, purchase_price, profit_goal, user_id } = await req.json();
       console.log('Creating strategy:', { token_symbol, purchase_price, profit_goal, user_id });
 
@@ -56,9 +55,9 @@ serve(async (req) => {
     }
 
     // Update strategy
-    if (method === 'PUT' && path) {
-      const { token_symbol, purchase_price, profit_goal, status } = await req.json();
-      console.log('Updating strategy:', { id: path, token_symbol, purchase_price, profit_goal, status });
+    if (method === 'PUT') {
+      const { id, token_symbol, purchase_price, profit_goal, status } = await req.json();
+      console.log('Updating strategy:', { id, token_symbol, purchase_price, profit_goal, status });
 
       const { data, error } = await supabase
         .from('trading_strategies')
@@ -69,7 +68,7 @@ serve(async (req) => {
           status,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', path)
+        .eq('id', id)
         .select()
         .single();
 
@@ -81,13 +80,14 @@ serve(async (req) => {
     }
 
     // Delete strategy
-    if (method === 'DELETE' && path) {
-      console.log('Deleting strategy:', path);
+    if (method === 'DELETE') {
+      const { id } = await req.json();
+      console.log('Deleting strategy:', id);
       
       const { error } = await supabase
         .from('trading_strategies')
         .delete()
-        .eq('id', path);
+        .eq('id', id);
 
       if (error) throw error;
 
@@ -98,7 +98,8 @@ serve(async (req) => {
 
     // Get strategies for user
     if (method === 'GET') {
-      const userId = new URL(url).searchParams.get('userId');
+      const url = new URL(req.url);
+      const userId = url.searchParams.get('userId');
       console.log('Fetching strategies for user:', userId);
 
       if (!userId) {
