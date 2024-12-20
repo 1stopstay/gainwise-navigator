@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Strategy {
   id: string;
@@ -38,17 +39,28 @@ export const StrategyCard = ({
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const deleteStrategy = useDeleteTradingStrategy();
   const updateStrategy = useUpdateTradingStrategy();
+  const { toast } = useToast();
 
   const handleDelete = async () => {
     try {
       await deleteStrategy.mutateAsync(strategy.id);
       setShowDeleteAlert(false);
+      toast({
+        title: "Strategy deleted",
+        description: "Your trading strategy has been deleted successfully.",
+      });
     } catch (error) {
       console.error('Error deleting strategy:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete the strategy. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
   const handleEdit = () => {
+    console.log('Edit strategy:', strategy);
     onEdit(strategy);
   };
 
@@ -59,8 +71,17 @@ export const StrategyCard = ({
         status: 'paused',
       } as any);
       onPause(strategy.id);
+      toast({
+        title: "Strategy paused",
+        description: "Your trading strategy has been paused successfully.",
+      });
     } catch (error) {
       console.error('Error pausing strategy:', error);
+      toast({
+        title: "Error",
+        description: "Failed to pause the strategy. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
