@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { calculateTokensToSell, calculateTargetX, TokenInvestment } from "@/utils/profitCalculations";
 
 interface ProfitMilestonesProps {
   strategy: {
@@ -23,50 +24,56 @@ interface ProfitMilestonesProps {
 export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSteps = 4 }: ProfitMilestonesProps) => {
   const calculateMilestones = () => {
     const milestones = [];
-    let remainingTokens = 100;
+    let remainingTokens = 100; // Start with 100% of tokens
     let totalProfit = 0;
-    let initialInvestment = strategy.purchase_price;
     
+    const investment: TokenInvestment = {
+      tokenCost: strategy.purchase_price / 100, // Convert to per-token cost
+      numberOfTokens: 100, // Using percentages
+      profitStrategy: "recoup",
+      recoupSteps,
+      targetMultiple: strategy.profit_goal,
+    };
+
     if (recoupInvestment) {
-      const sellPerStep = 100 / recoupSteps;
-      for (let i = 1; i <= recoupSteps; i++) {
-        const priceMultiple = Math.pow(2, i);
-        const sellAmount = sellPerStep;
-        const profitAtStep = (initialInvestment * sellAmount / 100) * (priceMultiple - 1);
-        remainingTokens -= sellAmount;
+      for (let step = 1; step <= recoupSteps; step++) {
+        const { tokensToSell, remainingTokens: newRemaining, profitAtStep } = calculateTokensToSell(investment, step);
+        remainingTokens = newRemaining;
         totalProfit += profitAtStep;
         
+        const priceMultiple = Math.pow(2, step);
         milestones.push({
-          step: i,
+          step,
           priceMultiple: `${priceMultiple}x`,
-          sellPercentage: sellAmount.toFixed(1),
+          sellPercentage: tokensToSell.toFixed(1),
           remainingTokens: remainingTokens.toFixed(1),
           profitUSD: totalProfit.toFixed(2),
-          sellAmount: ((initialInvestment * sellAmount / 100) * priceMultiple).toFixed(2),
+          sellAmount: (strategy.purchase_price * tokensToSell / 100 * priceMultiple).toFixed(2),
           targetPrice: (strategy.purchase_price / 100 * priceMultiple).toFixed(2),
         });
       }
     }
 
-    // Final profit goal milestone
+    // Final target X milestone
     if (remainingTokens > 0) {
-      const finalProfit = (initialInvestment * remainingTokens / 100) * (strategy.profit_goal - 1);
+      const { targetPrice, futureValue } = calculateTargetX(investment, remainingTokens);
+      const finalProfit = futureValue - (strategy.purchase_price * remainingTokens / 100);
       totalProfit += finalProfit;
+      
       milestones.push({
         step: milestones.length + 1,
         priceMultiple: `${strategy.profit_goal}x`,
         sellPercentage: remainingTokens.toFixed(1),
         remainingTokens: "0.0",
         profitUSD: totalProfit.toFixed(2),
-        sellAmount: ((initialInvestment * remainingTokens / 100) * strategy.profit_goal).toFixed(2),
-        targetPrice: (strategy.purchase_price / 100 * strategy.profit_goal).toFixed(2),
+        sellAmount: futureValue.toFixed(2),
+        targetPrice: targetPrice.toFixed(2),
       });
     }
 
     return milestones;
   };
 
-  const milestones = calculateMilestones();
   const getTradingPlatformUrl = (symbol: string) => {
     switch (symbol.toUpperCase()) {
       case 'BTC':
@@ -79,6 +86,7 @@ export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSte
     }
   };
 
+  const milestones = calculateMilestones();
   const nextMilestone = milestones[0];
 
   return (
