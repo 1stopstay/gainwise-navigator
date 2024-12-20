@@ -121,10 +121,16 @@ export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSte
         {finalMilestone && finalMilestone.projectedProfit && (
           <Alert className="bg-primary/10 border-primary mt-4">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Projected Outcome</AlertTitle>
-            <AlertDescription>
-              If you follow this strategy and {strategy.token_symbol} reaches ${finalMilestone.targetPrice}, 
-              your projected profit will be ${finalMilestone.projectedProfit} ({finalMilestone.profitPercentage}% return)
+            <AlertTitle>Strategy Summary</AlertTitle>
+            <AlertDescription className="space-y-2">
+              <p>
+                If you follow this strategy and {strategy.token_symbol} reaches ${finalMilestone.targetPrice}, 
+                you will have a potential profit of ${finalMilestone.projectedProfit} ({finalMilestone.profitPercentage}% return).
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Stick to this strategy, and when {strategy.token_symbol} hits ${finalMilestone.targetPrice} per token, 
+                your final sale should give you ${finalMilestone.sellAmount} in total value.
+              </p>
             </AlertDescription>
           </Alert>
         )}
