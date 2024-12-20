@@ -9,6 +9,7 @@ import { CreateAlertDialog } from "@/components/signals/CreateAlertDialog";
 import { IndicatorCard } from "@/components/signals/IndicatorCard";
 import ProfileSidebar from "@/components/profile/ProfileSidebar";
 import { useProfile } from "@/hooks/useProfile";
+import { useSignals } from "@/hooks/useSignals";
 import { supabase } from "@/integrations/supabase/client";
 
 const SignalsAndAlerts = () => {
@@ -16,6 +17,7 @@ const SignalsAndAlerts = () => {
   const [showCreateAlert, setShowCreateAlert] = useState(false);
   const [userId, setUserId] = useState<string | undefined>();
   const { data: profile } = useProfile(userId);
+  const { signals, isLoading } = useSignals();
 
   useEffect(() => {
     const getUser = async () => {
@@ -26,11 +28,15 @@ const SignalsAndAlerts = () => {
     getUser();
   }, []);
 
+  // Find specific signals by indicator type
+  const rsiSignal = signals.find(s => s.indicator === "RSI");
+  const macdSignal = signals.find(s => s.indicator === "MACD");
+  const bbSignal = signals.find(s => s.indicator === "BOLLINGER_BANDS");
+
   return (
     <div className="min-h-screen bg-dark flex">
       <ProfileSidebar profile={profile} />
       
-      {/* Main Content */}
       <div className="flex-1 pl-[250px]">
         <div className="container mx-auto px-4 py-8">
           {/* Header Section */}
@@ -72,36 +78,42 @@ const SignalsAndAlerts = () => {
 
           {/* Indicators Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-            <IndicatorCard
-              id="rsi-indicator"
-              name="RSI"
-              value={75}
-              status="Overbought"
-              type="warning"
-              confidenceScore={85}
-              isActive={true}
-              onToggle={() => {}}
-            />
-            <IndicatorCard
-              id="macd-indicator"
-              name="MACD"
-              value={0.0023}
-              status="Bullish Crossover"
-              type="success"
-              confidenceScore={92}
-              isActive={true}
-              onToggle={() => {}}
-            />
-            <IndicatorCard
-              id="bollinger-bands-indicator"
-              name="Bollinger Bands"
-              value={32450}
-              status="Upper Band Break"
-              type="warning"
-              confidenceScore={78}
-              isActive={true}
-              onToggle={() => {}}
-            />
+            {rsiSignal && (
+              <IndicatorCard
+                id={rsiSignal.id}
+                name="RSI"
+                value={rsiSignal.value || 0}
+                status={rsiSignal.condition}
+                type={rsiSignal.condition.includes("ABOVE") ? "warning" : "success"}
+                confidenceScore={rsiSignal.confidence_score || 0}
+                isActive={rsiSignal.is_active || false}
+                onToggle={() => {}}
+              />
+            )}
+            {macdSignal && (
+              <IndicatorCard
+                id={macdSignal.id}
+                name="MACD"
+                value={macdSignal.value || 0}
+                status={macdSignal.condition}
+                type={macdSignal.condition.includes("ABOVE") ? "success" : "warning"}
+                confidenceScore={macdSignal.confidence_score || 0}
+                isActive={macdSignal.is_active || false}
+                onToggle={() => {}}
+              />
+            )}
+            {bbSignal && (
+              <IndicatorCard
+                id={bbSignal.id}
+                name="Bollinger Bands"
+                value={bbSignal.value || 0}
+                status={bbSignal.condition}
+                type={bbSignal.condition.includes("ABOVE") ? "warning" : "success"}
+                confidenceScore={bbSignal.confidence_score || 0}
+                isActive={bbSignal.is_active || false}
+                onToggle={() => {}}
+              />
+            )}
           </div>
 
           {/* Alerts and Feed Section */}
