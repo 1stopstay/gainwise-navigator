@@ -2,11 +2,18 @@ import { ArrowLeftRight, LogIn, Download } from "lucide-react";
 import { Button } from "./ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "./ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";  // Import useNavigate
 
 export default function Navigation() {
+  const navigate = useNavigate();  // Initialize navigate function
+
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     section?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');  // Navigate to login page
   };
 
   return (
@@ -71,7 +78,12 @@ export default function Navigation() {
 
           {/* Right: CTA Buttons */}
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="hidden md:flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="hidden md:flex items-center gap-2"
+              onClick={handleLoginClick}  // Add click handler
+            >
               <LogIn className="w-4 h-4" />
               Login
             </Button>
