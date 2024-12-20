@@ -40,3 +40,22 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Auth UI Styles */
+.auth-container {
+  width: 100%;
+}
+
+.auth-button {
+  @apply bg-primary hover:bg-primary-dark text-dark font-semibold transition-all duration-300 !important;
+}
+
+.auth-input {
+  @apply bg-black/50 border-white/10 focus:border-primary text-white !important;
+}
+
+/* Override Supabase Auth UI styles */
+[data-theme="dark"] {
+  --colors-brand: #00ff73 !important;
+  --colors-brandAccent: #00cc5c !important;
+}
