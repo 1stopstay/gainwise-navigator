@@ -1,10 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -19,19 +19,43 @@ serve(async (req) => {
     );
 
     const { method } = req;
-    const url = new URL(req.url);
-    
     console.log(`Processing ${method} request`);
 
-    // Create strategy
-    if (method === 'POST') {
-      const { token_symbol, purchase_price, profit_goal, user_id } = await req.json();
+    // For GET requests
+    if (method === 'GET') {
+      const body = await req.json();
+      const user_id = body.user_id;
+      
+      console.log('GET request body:', body);
       
       if (!user_id) {
         throw new Error('User ID is required');
       }
+
+      console.log('Fetching strategies for user:', user_id);
       
-      console.log('Creating strategy:', { token_symbol, purchase_price, profit_goal, user_id });
+      const { data, error } = await supabase
+        .from('trading_strategies')
+        .select('*')
+        .eq('user_id', user_id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify(data), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // For POST requests
+    if (method === 'POST') {
+      const { token_symbol, purchase_price, profit_goal, user_id } = await req.json();
+      
+      console.log('POST request data:', { token_symbol, purchase_price, profit_goal, user_id });
+      
+      if (!user_id) {
+        throw new Error('User ID is required');
+      }
 
       const { data, error } = await supabase
         .from('trading_strategies')
@@ -51,15 +75,38 @@ serve(async (req) => {
       });
     }
 
-    // Update strategy
-    if (method === 'PUT') {
-      const { id, token_symbol, purchase_price, profit_goal, status } = await req.json();
+    // For DELETE requests
+    if (method === 'DELETE') {
+      const { id, user_id } = await req.json();
       
-      if (!id) {
-        throw new Error('Strategy ID is required');
+      console.log('DELETE request data:', { id, user_id });
+      
+      if (!id || !user_id) {
+        throw new Error('Strategy ID and User ID are required');
       }
       
-      console.log('Updating strategy:', { id, token_symbol, purchase_price, profit_goal, status });
+      const { error } = await supabase
+        .from('trading_strategies')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user_id);
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // For PUT requests
+    if (method === 'PUT') {
+      const { id, token_symbol, purchase_price, profit_goal, status, user_id } = await req.json();
+      
+      console.log('PUT request data:', { id, token_symbol, purchase_price, profit_goal, status, user_id });
+      
+      if (!id || !user_id) {
+        throw new Error('Strategy ID and User ID are required');
+      }
 
       const { data, error } = await supabase
         .from('trading_strategies')
@@ -71,52 +118,9 @@ serve(async (req) => {
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)
+        .eq('user_id', user_id)
         .select()
         .single();
-
-      if (error) throw error;
-
-      return new Response(JSON.stringify(data), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Delete strategy
-    if (method === 'DELETE') {
-      const { id } = await req.json();
-      
-      if (!id) {
-        throw new Error('Strategy ID is required');
-      }
-      
-      console.log('Deleting strategy:', id);
-      
-      const { error } = await supabase
-        .from('trading_strategies')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      return new Response(JSON.stringify({ success: true }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Get strategies for user
-    if (method === 'GET') {
-      const user_id = url.searchParams.get('user_id'); // Changed from userId to user_id for consistency
-      console.log('Fetching strategies for user:', user_id);
-
-      if (!user_id) {
-        throw new Error('User ID is required');
-      }
-
-      const { data, error } = await supabase
-        .from('trading_strategies')
-        .select('*')
-        .eq('user_id', user_id)
-        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
