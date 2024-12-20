@@ -25,7 +25,7 @@ export const useTradingStrategies = (userId: string | undefined) => {
 
       const response = await supabase.functions.invoke('trading-strategies', {
         method: 'GET',
-        queryParams: { userId }
+        body: { userId }
       });
 
       if (response.error) {
@@ -82,9 +82,12 @@ export const useDeleteTradingStrategy = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       console.log('Deleting trading strategy:', id);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No user found');
+
       const response = await supabase.functions.invoke('trading-strategies', {
         method: 'DELETE',
-        body: { id },
+        body: { id, user_id: user.id },
       });
 
       if (response.error) {
@@ -111,9 +114,12 @@ export const useUpdateTradingStrategy = () => {
   return useMutation({
     mutationFn: async (strategy: TradingStrategy) => {
       console.log('Updating trading strategy:', strategy);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No user found');
+
       const response = await supabase.functions.invoke('trading-strategies', {
         method: 'PUT',
-        body: strategy,
+        body: { ...strategy, user_id: user.id },
       });
 
       if (response.error) {
