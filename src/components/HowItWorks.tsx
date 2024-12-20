@@ -3,9 +3,39 @@ import { Card, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Bell, ArrowRightLeft, Wallet } from "lucide-react";
+import { useCreateTradingStrategy } from '@/hooks/useTradingStrategies';
+import { useToast } from '@/hooks/use-toast';
 
 export default function HowItWorks() {
   const [hoveredStep, setHoveredStep] = useState<number | null>(null);
+  const [purchasePrice, setPurchasePrice] = useState('');
+  const [profitGoal, setProfitGoal] = useState('');
+  const createStrategy = useCreateTradingStrategy();
+  const { toast } = useToast();
+
+  const handleCreateStrategy = async () => {
+    try {
+      await createStrategy.mutateAsync({
+        purchase_price: Number(purchasePrice),
+        profit_goal: Number(profitGoal),
+        token_symbol: 'ETH', // Default to ETH for now
+      });
+      
+      toast({
+        title: "Strategy created!",
+        description: "Your trading strategy has been saved.",
+      });
+      
+      setPurchasePrice('');
+      setProfitGoal('');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Please make sure you're logged in and try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const steps = [
     {
@@ -13,9 +43,27 @@ export default function HowItWorks() {
       icon: Wallet,
       preview: (
         <div className="space-y-4">
-          <Input type="number" placeholder="Purchase Price (USD)" className="bg-dark/50" />
-          <Input type="number" placeholder="Profit Goal (%)" className="bg-dark/50" />
-          <Button className="w-full">Calculate Strategy</Button>
+          <Input 
+            type="number" 
+            placeholder="Purchase Price (USD)" 
+            className="bg-dark/50"
+            value={purchasePrice}
+            onChange={(e) => setPurchasePrice(e.target.value)}
+          />
+          <Input 
+            type="number" 
+            placeholder="Profit Goal (%)" 
+            className="bg-dark/50"
+            value={profitGoal}
+            onChange={(e) => setProfitGoal(e.target.value)}
+          />
+          <Button 
+            className="w-full"
+            onClick={handleCreateStrategy}
+            disabled={createStrategy.isPending}
+          >
+            {createStrategy.isPending ? 'Saving...' : 'Calculate Strategy'}
+          </Button>
         </div>
       )
     },
