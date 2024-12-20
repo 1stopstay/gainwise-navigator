@@ -10,6 +10,18 @@ import type { Database } from "@/integrations/supabase/types";
 
 type UserSettings = Database["public"]["Tables"]["user_settings"]["Row"];
 
+interface NotificationPreferences {
+  signals: boolean;
+  profit_alerts: boolean;
+  general_updates: boolean;
+}
+
+const defaultNotificationPreferences: NotificationPreferences = {
+  signals: true,
+  profit_alerts: true,
+  general_updates: true
+};
+
 export default function Settings() {
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -71,12 +83,19 @@ export default function Settings() {
     }
   };
 
-  const handleNotificationToggle = (type: keyof UserSettings["notification_preferences"]) => {
-    if (!settings?.notification_preferences) return;
+  const getNotificationPreferences = (): NotificationPreferences => {
+    if (!settings?.notification_preferences || typeof settings.notification_preferences === 'string') {
+      return defaultNotificationPreferences;
+    }
     
+    return settings.notification_preferences as NotificationPreferences;
+  };
+
+  const handleNotificationToggle = (type: keyof NotificationPreferences) => {
+    const currentPreferences = getNotificationPreferences();
     const newPreferences = {
-      ...settings.notification_preferences,
-      [type]: !settings.notification_preferences[type]
+      ...currentPreferences,
+      [type]: !currentPreferences[type]
     };
     
     updateSettings({ notification_preferences: newPreferences });
@@ -89,6 +108,8 @@ export default function Settings() {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  const preferences = getNotificationPreferences();
 
   return (
     <div className="min-h-screen bg-dark flex">
@@ -117,7 +138,7 @@ export default function Settings() {
                     </p>
                   </div>
                   <Switch
-                    checked={settings?.notification_preferences?.signals}
+                    checked={preferences.signals}
                     onCheckedChange={() => handleNotificationToggle('signals')}
                   />
                 </div>
@@ -129,7 +150,7 @@ export default function Settings() {
                     </p>
                   </div>
                   <Switch
-                    checked={settings?.notification_preferences?.profit_alerts}
+                    checked={preferences.profit_alerts}
                     onCheckedChange={() => handleNotificationToggle('profit_alerts')}
                   />
                 </div>
@@ -141,7 +162,7 @@ export default function Settings() {
                     </p>
                   </div>
                   <Switch
-                    checked={settings?.notification_preferences?.general_updates}
+                    checked={preferences.general_updates}
                     onCheckedChange={() => handleNotificationToggle('general_updates')}
                   />
                 </div>
