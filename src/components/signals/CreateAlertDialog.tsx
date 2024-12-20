@@ -2,26 +2,18 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { useAlerts } from "@/hooks/useAlerts";
-import { Bell, Coins } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { TrendSelection } from "./TrendSelection";
 import { NotificationPreferences } from "./NotificationPreferences";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AlertFormHeader } from "./AlertFormHeader";
+import { TokenSelection } from "./TokenSelection";
+import { AlertPreview } from "./AlertPreview";
+import { FrequencySelection } from "./FrequencySelection";
 
 type CreateAlertDialogProps = {
   open: boolean;
@@ -69,48 +61,18 @@ export const CreateAlertDialog = ({
     setIsEnabled(true);
   };
 
-  const getAlertPreview = () => {
-    if (!symbol || selectedTrends.length === 0) return null;
-    
-    const trendDescriptions = selectedTrends.map(trend => {
-      const direction = trend.includes("UP") || trend === "BULLISH" ? "goes up" : "goes down";
-      return `${symbol.toUpperCase()} ${direction}${value ? ` past ${value}` : ''}`;
-    });
-    
-    return `We'll notify you when ${trendDescriptions.join(" or ")}`;
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         className="glass-card max-w-lg h-[90vh] flex flex-col overflow-hidden"
         aria-describedby="alert-dialog-description"
       >
-        <DialogHeader className="flex-shrink-0">
-          <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-            <Bell className="w-6 h-6 text-primary" />
-            Track Your Tokens & Get Alerts
-          </DialogTitle>
-          <DialogDescription id="alert-dialog-description" className="text-gray-400 mt-2">
-            Get real-time updates about your favorite coins
-          </DialogDescription>
-        </DialogHeader>
+        <AlertFormHeader />
 
         <ScrollArea className="flex-1 pr-4">
           <div className="space-y-6 py-4">
             {/* Token Selection */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Coins className="w-5 h-5 text-primary" />
-                <Label className="text-lg font-medium">Select Token</Label>
-              </div>
-              <Input
-                placeholder="Enter token symbol (e.g., BTC, ETH)"
-                value={symbol}
-                onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-                className="bg-background/50"
-              />
-            </div>
+            <TokenSelection symbol={symbol} onSymbolChange={setSymbol} />
 
             {/* Trend Selection */}
             <TrendSelection
@@ -123,7 +85,6 @@ export const CreateAlertDialog = ({
               trend === "PRICE_UP" || trend === "PRICE_DOWN"
             ) && (
               <div className="space-y-4">
-                <Label className="text-lg font-medium">Set Price Target</Label>
                 <div className="space-y-2">
                   <Input
                     type="number"
@@ -150,28 +111,17 @@ export const CreateAlertDialog = ({
             />
 
             {/* Frequency */}
-            <div className="space-y-4">
-              <Label className="text-lg font-medium">Update Frequency</Label>
-              <Select value={frequency} onValueChange={setFrequency}>
-                <SelectTrigger className="bg-background/50">
-                  <SelectValue placeholder="Select frequency" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="5min">Every 5 Minutes</SelectItem>
-                  <SelectItem value="15min">Every 15 Minutes</SelectItem>
-                  <SelectItem value="1h">Hourly</SelectItem>
-                  <SelectItem value="1d">Daily</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <FrequencySelection 
+              frequency={frequency}
+              onFrequencyChange={setFrequency}
+            />
 
             {/* Preview */}
-            {getAlertPreview() && (
-              <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
-                <h3 className="font-medium mb-2">Preview</h3>
-                <p className="text-sm text-gray-400">{getAlertPreview()}</p>
-              </div>
-            )}
+            <AlertPreview 
+              symbol={symbol}
+              selectedTrends={selectedTrends}
+              value={value}
+            />
           </div>
         </ScrollArea>
 
