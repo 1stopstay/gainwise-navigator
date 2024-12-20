@@ -32,8 +32,8 @@ const ProfileOverview = ({ profile }: ProfileOverviewProps) => {
   ];
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {stats.map((stat) => (
           <Card 
             key={stat.label} 
@@ -69,8 +69,8 @@ const ProfileOverview = ({ profile }: ProfileOverviewProps) => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="glass-card p-6 col-span-full lg:col-span-1">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <Card className="glass-card p-6">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <LineChart className="w-5 h-5 text-primary" />
             Profit Overview
@@ -80,7 +80,7 @@ const ProfileOverview = ({ profile }: ProfileOverviewProps) => {
           </div>
         </Card>
 
-        <Card className="glass-card p-6 col-span-full lg:col-span-1">
+        <Card className="glass-card p-6">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <Bell className="w-5 h-5 text-primary" />
             Signal Alerts
