@@ -3,6 +3,8 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from "@/integrations/supabase/client";
 
 export const AuthUI = () => {
+  console.log("Rendering AuthUI component"); // Debug log
+  
   return (
     <Auth
       supabaseClient={supabase}

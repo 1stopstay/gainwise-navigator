@@ -6,7 +6,7 @@ import { AuthUI } from "@/components/auth/AuthUI";
 
 const Login = () => {
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -26,10 +26,14 @@ const Login = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  console.log("Rendering Login page"); // Debug log
+
   return (
-    <AuthContainer title="Welcome Back">
-      <AuthUI />
-    </AuthContainer>
+    <div className="min-h-screen w-full">
+      <AuthContainer title="Welcome Back">
+        <AuthUI />
+      </AuthContainer>
+    </div>
   );
 };
 

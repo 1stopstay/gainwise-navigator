@@ -44,14 +44,16 @@
 /* Auth UI Styles */
 .auth-container {
   width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .auth-button {
-  @apply bg-primary hover:bg-primary-dark text-dark font-semibold transition-all duration-300 !important;
+  @apply bg-primary hover:bg-primary-dark text-dark font-semibold py-2 px-4 rounded transition-all duration-300 w-full !important;
 }
 
 .auth-input {
-  @apply bg-black/50 border-white/10 focus:border-primary text-white !important;
+  @apply bg-black/50 border border-white/10 rounded px-4 py-2 focus:border-primary text-white w-full !important;
 }
 
 /* Override Supabase Auth UI styles */
