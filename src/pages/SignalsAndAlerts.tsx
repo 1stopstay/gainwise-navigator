@@ -15,7 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 const SignalsAndAlerts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateAlert, setShowCreateAlert] = useState(false);
-  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [userId, setUserId] = useState<string | undefined>();
   const { data: profile } = useProfile(userId);
 
   useEffect(() => {

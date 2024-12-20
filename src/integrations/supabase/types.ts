@@ -9,6 +9,51 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      alerts: {
+        Row: {
+          condition: string
+          created_at: string
+          id: string
+          indicator: string
+          is_active: boolean | null
+          last_triggered_at: string | null
+          name: string
+          notification_preferences: Json | null
+          symbol: string
+          updated_at: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          condition: string
+          created_at?: string
+          id?: string
+          indicator: string
+          is_active?: boolean | null
+          last_triggered_at?: string | null
+          name: string
+          notification_preferences?: Json | null
+          symbol: string
+          updated_at?: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          condition?: string
+          created_at?: string
+          id?: string
+          indicator?: string
+          is_active?: boolean | null
+          last_triggered_at?: string | null
+          name?: string
+          notification_preferences?: Json | null
+          symbol?: string
+          updated_at?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
       plans: {
         Row: {
           created_at: string
@@ -65,7 +110,10 @@ export type Database = {
           id: string
           indicator: string
           is_active: boolean | null
+          last_price: number | null
+          metadata: Json | null
           name: string
+          signal_type: string | null
           token_symbol: string
           updated_at: string
           user_id: string
@@ -78,7 +126,10 @@ export type Database = {
           id?: string
           indicator: string
           is_active?: boolean | null
+          last_price?: number | null
+          metadata?: Json | null
           name: string
+          signal_type?: string | null
           token_symbol: string
           updated_at?: string
           user_id: string
@@ -91,7 +142,10 @@ export type Database = {
           id?: string
           indicator?: string
           is_active?: boolean | null
+          last_price?: number | null
+          metadata?: Json | null
           name?: string
+          signal_type?: string | null
           token_symbol?: string
           updated_at?: string
           user_id?: string
