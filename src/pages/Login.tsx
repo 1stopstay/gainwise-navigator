@@ -17,7 +17,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center relative bg-black overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center relative bg-[#D3E4FD] overflow-hidden">
       <ParticlesBackground />
       
       <Card className="w-full max-w-md mx-4 animate-fade-up glass-card">

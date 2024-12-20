@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 7%;
+    --background: 210 100% 88%; /* Soft Blue hue */
     --foreground: 0 0% 100%;
     --border: 0 0% 20%;
     --input: 0 0% 15%;
@@ -14,7 +14,7 @@
   }
 
   body {
-    @apply bg-dark text-white font-inter;
+    @apply bg-background text-white font-inter;
   }
 }
 
