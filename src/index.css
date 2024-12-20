@@ -13,8 +13,30 @@
     --ring: 156 100% 50%;
   }
 
+  /* PWA specific styles */
+  html {
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
   body {
     @apply bg-dark text-white font-inter overflow-x-hidden min-h-screen;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
+  }
+
+  /* Disable text selection for better mobile experience */
+  * {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Allow text selection in inputs and textareas */
+  input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
   }
 
   /* Improve touch targets on mobile */
