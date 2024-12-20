@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -81,15 +82,18 @@ export const CreateAlertDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-card max-w-lg h-[90vh] flex flex-col overflow-hidden">
+      <DialogContent 
+        className="glass-card max-w-lg h-[90vh] flex flex-col overflow-hidden"
+        aria-describedby="alert-dialog-description"
+      >
         <DialogHeader className="flex-shrink-0">
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
             <Bell className="w-6 h-6 text-primary" />
             Track Your Tokens & Get Alerts
           </DialogTitle>
-          <p className="text-gray-400 mt-2">
+          <DialogDescription id="alert-dialog-description" className="text-gray-400 mt-2">
             Get real-time updates about your favorite coins
-          </p>
+          </DialogDescription>
         </DialogHeader>
 
         <ScrollArea className="flex-1 pr-4">
