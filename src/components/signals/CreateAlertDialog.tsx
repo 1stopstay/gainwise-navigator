@@ -8,6 +8,8 @@ import { AlertPreview } from "./AlertPreview";
 import { useAlerts } from "@/hooks/useAlerts";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CreateAlertDialogProps {
   open: boolean;
@@ -90,25 +92,36 @@ export const CreateAlertDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] p-0">
         <AlertFormHeader
           title={editingAlert ? "Edit Alert" : "Create Alert"}
           description="Set up your alert preferences"
         />
-        <TokenSelection symbol={symbol} onSymbolChange={setSymbol} />
-        <TrendSelection
-          selectedTrends={selectedTrends}
-          onTrendChange={setSelectedTrends}
-        />
-        <NotificationPreferences
-          preferences={notificationPreferences}
-          onPreferencesChange={setNotificationPreferences}
-        />
-        <AlertPreview
-          symbol={symbol}
-          selectedTrends={selectedTrends}
-          value={value}
-        />
+        <ScrollArea className="p-6 max-h-[calc(90vh-120px)]">
+          <div className="space-y-6">
+            <TokenSelection symbol={symbol} onSymbolChange={setSymbol} />
+            <TrendSelection
+              selectedTrends={selectedTrends}
+              onTrendChange={setSelectedTrends}
+            />
+            <NotificationPreferences
+              preferences={notificationPreferences}
+              onPreferencesChange={setNotificationPreferences}
+            />
+            <AlertPreview
+              symbol={symbol}
+              selectedTrends={selectedTrends}
+              value={value}
+            />
+            <Button 
+              onClick={handleSubmit} 
+              className="w-full"
+              disabled={!symbol || selectedTrends.length === 0}
+            >
+              Start Tracking
+            </Button>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
