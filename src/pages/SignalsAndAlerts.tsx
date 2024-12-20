@@ -73,6 +73,7 @@ const SignalsAndAlerts = () => {
           {/* Indicators Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             <IndicatorCard
+              id="rsi-indicator"
               name="RSI"
               value={75}
               status="Overbought"
@@ -82,6 +83,7 @@ const SignalsAndAlerts = () => {
               onToggle={() => {}}
             />
             <IndicatorCard
+              id="macd-indicator"
               name="MACD"
               value={0.0023}
               status="Bullish Crossover"
@@ -91,6 +93,7 @@ const SignalsAndAlerts = () => {
               onToggle={() => {}}
             />
             <IndicatorCard
+              id="bollinger-bands-indicator"
               name="Bollinger Bands"
               value={32450}
               status="Upper Band Break"
