@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { calculateAmountInvested } from "@/utils/profitCalculations";
 
 interface TokenDetailsInputProps {
   tokenSymbol: string;
@@ -26,6 +27,10 @@ export const TokenDetailsInput = ({
   onTokenCostChange,
   onNumberOfTokensChange,
 }: TokenDetailsInputProps) => {
+  const amountInvested = tokenCost && numberOfTokens 
+    ? calculateAmountInvested(Number(tokenCost), Number(numberOfTokens))
+    : 0;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="space-y-2">
@@ -99,6 +104,28 @@ export const TokenDetailsInput = ({
           onChange={(e) => onNumberOfTokensChange(e.target.value)}
           placeholder="0"
           className="bg-dark/50"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label className="flex items-center gap-2">
+          Amount Invested (USD)
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <HelpCircle className="h-4 w-4 text-muted-foreground" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Total amount invested (Token Cost × Number of Tokens)</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </Label>
+        <Input
+          type="number"
+          value={amountInvested.toFixed(2)}
+          readOnly
+          className="bg-dark/50 cursor-not-allowed"
         />
       </div>
     </div>
