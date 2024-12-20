@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -16,6 +16,7 @@ interface ProfileSidebarProps {
 
 const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [isHovered, setIsHovered] = useState("");
   const [isCopied, setIsCopied] = useState(false);
@@ -35,9 +36,9 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
 
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/profile" },
-    { icon: Wallet, label: "Swap", path: "/profile/swap" },
-    { icon: LineChart, label: "Profit Strategies", path: "/profile/strategies" },
-    { icon: Bell, label: "Signals & Alerts", path: "/profile/signals" },
+    { icon: Wallet, label: "Swap", path: "/swap" },
+    { icon: LineChart, label: "Profit Strategies", path: "/profit-strategies" },
+    { icon: Bell, label: "Signals & Alerts", path: "/signals" },
     { icon: Settings, label: "Settings", path: "/profile/settings" },
   ];
 
@@ -96,7 +97,8 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
                   "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300",
                   "hover:bg-primary/10 hover:text-primary hover:translate-x-1",
                   "focus:outline-none focus:ring-2 focus:ring-primary/50",
-                  isHovered === item.label ? "bg-primary/10 text-primary" : "text-gray-300"
+                  location.pathname === item.path ? "bg-primary/10 text-primary" : "text-gray-300",
+                  isHovered === item.label ? "bg-primary/10 text-primary" : ""
                 )}
                 onMouseEnter={() => setIsHovered(item.label)}
                 onMouseLeave={() => setIsHovered("")}
