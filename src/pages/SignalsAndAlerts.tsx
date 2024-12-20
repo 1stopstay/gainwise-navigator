@@ -3,7 +3,6 @@ import { Bell, HelpCircle, Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SignalsChart } from "@/components/signals/SignalsChart";
 import { SignalsFeed } from "@/components/signals/SignalsFeed";
 import { AlertsList } from "@/components/signals/AlertsList";
 import { CreateAlertDialog } from "@/components/signals/CreateAlertDialog";
@@ -101,11 +100,6 @@ const SignalsAndAlerts = () => {
               onToggle={() => {}}
             />
           </div>
-
-          {/* Chart Section */}
-          <Card className="glass-card p-4 mb-8">
-            <SignalsChart />
-          </Card>
 
           {/* Alerts and Feed Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
