@@ -8,8 +8,11 @@ const Login = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
+    console.log("Login component mounted"); // Debug log
+    
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      console.log("Current session:", session); // Debug log
       if (session) {
         navigate('/profile');
       }
@@ -17,7 +20,8 @@ const Login = () => {
     
     checkUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event, session); // Debug log
       if (session) {
         navigate('/profile');
       }
@@ -26,14 +30,10 @@ const Login = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  console.log("Rendering Login page"); // Debug log
-
   return (
-    <div className="min-h-screen w-full">
-      <AuthContainer title="Welcome Back">
-        <AuthUI />
-      </AuthContainer>
-    </div>
+    <AuthContainer title="Welcome Back">
+      <AuthUI />
+    </AuthContainer>
   );
 };
 
