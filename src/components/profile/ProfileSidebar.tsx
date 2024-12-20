@@ -4,9 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Settings, LogOut, Home, Wallet, LineChart, Bell, Copy } from "lucide-react";
+import { User, Settings, LogOut, Home, Wallet, LineChart, Bell, Copy, Menu, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
@@ -20,6 +21,8 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
   const { toast } = useToast();
   const [isHovered, setIsHovered] = useState("");
   const [isCopied, setIsCopied] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -63,8 +66,12 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
     }
   };
 
-  return (
-    <aside className="fixed left-0 top-0 h-screen w-[250px] bg-dark/50 backdrop-blur-xl border-r border-white/10 flex flex-col">
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const sidebarContent = (
+    <>
       <div className="p-6 text-center border-b border-white/10">
         <Avatar className="w-20 h-20 mx-auto mb-4 ring-2 ring-primary ring-offset-2 ring-offset-dark transition-all duration-300 hover:ring-4">
           <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.username || 'default'}`} />
@@ -74,7 +81,6 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
         </Avatar>
         <h2 className="text-xl font-bold gradient-text mb-2">{profile?.username || "User"}</h2>
         
-        {/* Wallet Address */}
         <div 
           className="flex items-center justify-center gap-2 px-3 py-1.5 bg-white/5 rounded-full text-sm text-gray-300 hover:text-white transition-colors cursor-pointer"
           onClick={copyToClipboard}
@@ -102,6 +108,7 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
                 )}
                 onMouseEnter={() => setIsHovered(item.label)}
                 onMouseLeave={() => setIsHovered("")}
+                onClick={() => isMobile && setIsMobileMenuOpen(false)}
               >
                 <item.icon className="w-5 h-5" />
                 <span>{item.label}</span>
@@ -124,7 +131,39 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
           Logout
         </Button>
       </div>
-    </aside>
+    </>
+  );
+
+  // Mobile toggle button
+  const mobileToggle = isMobile && (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="fixed top-4 left-4 z-50 md:hidden"
+      onClick={toggleMobileMenu}
+    >
+      {isMobileMenuOpen ? (
+        <X className="h-6 w-6" />
+      ) : (
+        <Menu className="h-6 w-6" />
+      )}
+    </Button>
+  );
+
+  return (
+    <>
+      {mobileToggle}
+      <aside className={cn(
+        "fixed left-0 top-0 h-screen bg-dark/50 backdrop-blur-xl border-r border-white/10 flex flex-col",
+        "transition-all duration-300 ease-in-out",
+        isMobile ? (
+          isMobileMenuOpen ? "w-[250px] translate-x-0" : "w-[250px] -translate-x-full"
+        ) : "w-[250px]",
+        "md:translate-x-0"
+      )}>
+        {sidebarContent}
+      </aside>
+    </>
   );
 };
 

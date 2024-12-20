@@ -3,9 +3,9 @@ import { Button } from "./ui/button";
 
 export default function Footer() {
   return (
-    <footer className="bg-dark/50 border-t border-white/10 py-16">
+    <footer className="bg-dark/50 border-t border-white/10 py-8 md:py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold font-exo gradient-text">GainWise</h3>
@@ -41,7 +41,7 @@ export default function Footer() {
               Experience seamless token swaps with our built-in DEX integration.
             </p>
             <Button 
-              className="bg-accent hover:bg-accent-dark text-dark font-semibold glow"
+              className="bg-accent hover:bg-accent-dark text-dark font-semibold glow w-full sm:w-auto"
               size="sm"
             >
               Try Our Built-In Swap

@@ -1,6 +1,6 @@
 import { LogIn, Download } from "lucide-react";
-import { Button } from "./ui/button";
-import { NavigationMenu } from "./ui/navigation-menu";
+import { Button } from "@/components/ui/button";
+import { NavigationMenu } from "@/components/ui/navigation-menu";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";

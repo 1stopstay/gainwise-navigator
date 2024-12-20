@@ -14,7 +14,12 @@
   }
 
   body {
-    @apply bg-dark text-white font-inter;
+    @apply bg-dark text-white font-inter overflow-x-hidden min-h-screen;
+  }
+
+  /* Improve touch targets on mobile */
+  button, a {
+    @apply min-h-[44px] min-w-[44px];
   }
 }
 
@@ -30,7 +35,7 @@
   @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
 }
 
-/* Dropdown Menu Styles */
+/* Mobile-friendly dropdown styles */
 [data-radix-popper-content-wrapper] {
   @apply z-50 !important;
 }
@@ -38,13 +43,13 @@
 .select-content,
 [role="menu"],
 [role="listbox"] {
-  @apply bg-dark/95 backdrop-blur-md border border-white/10 !important;
+  @apply bg-dark/95 backdrop-blur-md border border-white/10 max-h-[300px] overflow-y-auto !important;
 }
 
 [role="menuitem"],
 [role="option"] {
   @apply text-white hover:bg-primary/20 hover:text-primary transition-colors duration-200 !important;
-  @apply px-4 py-2 text-sm cursor-pointer !important;
+  @apply px-4 py-3 text-sm cursor-pointer !important;
 }
 
 [role="menuitem"][data-highlighted],
@@ -62,4 +67,25 @@
 [role="menu"],
 [role="listbox"] {
   @apply shadow-lg shadow-black/50 !important;
+}
+
+/* Mobile-friendly scrolling */
+.scroll-container {
+  @apply overflow-x-auto -mx-4 px-4;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive container padding */
+.container {
+  @apply px-4 md:px-6 lg:px-8;
+}
+
+/* Mobile-friendly form elements */
+input, select, textarea {
+  @apply text-base md:text-sm;
+}
+
+/* Better touch targets for mobile */
+.mobile-friendly-touch {
+  @apply p-3 md:p-2;
 }
