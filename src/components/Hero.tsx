@@ -32,7 +32,7 @@ export default function Hero() {
             <p className="text-xl text-gray-300 max-w-2xl">
               Smarter decisions. Simple tools. Secure profits.
             </p>
-            <div className="flex flex-wrap gap-4 pt-4">
+            <div className="flex flex-wrap gap-4 pt-4 justify-center">
               <Button size="lg" className="bg-primary hover:bg-primary-dark text-dark font-semibold glow">
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
