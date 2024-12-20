@@ -17,9 +17,43 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    // Minimum 8 characters, at least one uppercase, one lowercase, one number
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    return re.test(password);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // Email validation
+    if (!validateEmail(email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Password validation
+    if (!validatePassword(password)) {
+      toast({
+        title: "Weak Password",
+        description: "Password must be at least 8 characters long and include uppercase, lowercase, and numbers.",
+        variant: "destructive"
+      });
+      setIsLoading(false);
+      return;
+    }
+
     console.log(`Attempting to ${isSignUp ? 'sign up' : 'login'} with:`, { email });
 
     try {
@@ -32,7 +66,10 @@ const Login = () => {
           },
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error("Sign Up Error:", error);
+          throw error;
+        }
 
         toast({
           title: "Success",
@@ -44,7 +81,10 @@ const Login = () => {
           password,
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error("Login Error:", error);
+          throw error;
+        }
 
         toast({
           title: "Success",
