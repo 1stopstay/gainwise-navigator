@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ParticlesBackground from "@/components/ParticlesBackground";
+import { useNavigate } from "react-router-dom";  // Add this import
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();  // Initialize navigate function
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,9 +18,24 @@ const Login = () => {
     console.log("Login attempt with:", { email, password });
   };
 
+  const handleBackToHome = () => {
+    navigate('/');  // Navigate back to home page
+  };
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center relative bg-black overflow-hidden">
       <ParticlesBackground />
+      
+      <div className="absolute top-4 left-4">  {/* Position back button */}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={handleBackToHome}
+          className="text-white/70 hover:text-white transition-colors"
+        >
+          <ChevronLeft className="h-8 w-8" />
+        </Button>
+      </div>
       
       <Card className="w-full max-w-md mx-4 animate-fade-up glass-card">
         <CardHeader className="space-y-1">
