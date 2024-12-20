@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProfile } from "@/hooks/useProfile";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [userId, setUserId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -20,14 +21,15 @@ const Profile = () => {
           variant: "destructive",
         });
         navigate("/login");
+      } else {
+        setUserId(session.user.id);
       }
     };
     
     checkAuth();
   }, [navigate, toast]);
 
-  const { data: session } = await supabase.auth.getSession();
-  const { data: profile, isLoading } = useProfile(session?.user?.id);
+  const { data: profile, isLoading } = useProfile(userId);
 
   if (isLoading) {
     return (
