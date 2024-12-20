@@ -20,6 +20,7 @@ import { Bell, Coins } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { TrendSelection } from "./TrendSelection";
 import { NotificationPreferences } from "./NotificationPreferences";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type CreateAlertDialogProps = {
   open: boolean;
@@ -80,7 +81,7 @@ export const CreateAlertDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-card max-w-lg">
+      <DialogContent className="glass-card max-w-lg max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
             <Bell className="w-6 h-6 text-primary" />
@@ -91,82 +92,86 @@ export const CreateAlertDialog = ({
           </p>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
-          {/* Token Selection */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Coins className="w-5 h-5 text-primary" />
-              <Label className="text-lg font-medium">Select Token</Label>
-            </div>
-            <Input
-              placeholder="Enter token symbol (e.g., BTC, ETH)"
-              value={symbol}
-              onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-              className="bg-background/50"
-            />
-          </div>
-
-          {/* Trend Selection */}
-          <TrendSelection
-            selectedTrends={selectedTrends}
-            onTrendChange={setSelectedTrends}
-          />
-
-          {/* Threshold */}
-          {selectedTrends.some(trend => 
-            trend === "PRICE_UP" || trend === "PRICE_DOWN"
-          ) && (
+        <ScrollArea className="flex-1 px-1">
+          <div className="space-y-6 py-4">
+            {/* Token Selection */}
             <div className="space-y-4">
-              <Label className="text-lg font-medium">Set Price Target</Label>
-              <div className="space-y-2">
-                <Input
-                  type="number"
-                  placeholder="Enter target price"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  className="bg-background/50"
-                />
-                <Slider
-                  defaultValue={[0]}
-                  max={100}
-                  step={1}
-                  className="mt-2"
-                  onValueChange={(vals) => setValue(String(vals[0]))}
-                />
+              <div className="flex items-center gap-2">
+                <Coins className="w-5 h-5 text-primary" />
+                <Label className="text-lg font-medium">Select Token</Label>
               </div>
+              <Input
+                placeholder="Enter token symbol (e.g., BTC, ETH)"
+                value={symbol}
+                onChange={(e) => setSymbol(e.target.value.toUpperCase())}
+                className="bg-background/50"
+              />
             </div>
-          )}
 
-          {/* Notification Preferences */}
-          <NotificationPreferences
-            preferences={notificationPreferences}
-            onPreferencesChange={setNotificationPreferences}
-          />
+            {/* Trend Selection */}
+            <TrendSelection
+              selectedTrends={selectedTrends}
+              onTrendChange={setSelectedTrends}
+            />
 
-          {/* Frequency */}
-          <div className="space-y-4">
-            <Label className="text-lg font-medium">Update Frequency</Label>
-            <Select value={frequency} onValueChange={setFrequency}>
-              <SelectTrigger className="bg-background/50">
-                <SelectValue placeholder="Select frequency" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5min">Every 5 Minutes</SelectItem>
-                <SelectItem value="15min">Every 15 Minutes</SelectItem>
-                <SelectItem value="1h">Hourly</SelectItem>
-                <SelectItem value="1d">Daily</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Threshold */}
+            {selectedTrends.some(trend => 
+              trend === "PRICE_UP" || trend === "PRICE_DOWN"
+            ) && (
+              <div className="space-y-4">
+                <Label className="text-lg font-medium">Set Price Target</Label>
+                <div className="space-y-2">
+                  <Input
+                    type="number"
+                    placeholder="Enter target price"
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    className="bg-background/50"
+                  />
+                  <Slider
+                    defaultValue={[0]}
+                    max={100}
+                    step={1}
+                    className="mt-2"
+                    onValueChange={(vals) => setValue(String(vals[0]))}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Notification Preferences */}
+            <NotificationPreferences
+              preferences={notificationPreferences}
+              onPreferencesChange={setNotificationPreferences}
+            />
+
+            {/* Frequency */}
+            <div className="space-y-4">
+              <Label className="text-lg font-medium">Update Frequency</Label>
+              <Select value={frequency} onValueChange={setFrequency}>
+                <SelectTrigger className="bg-background/50">
+                  <SelectValue placeholder="Select frequency" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5min">Every 5 Minutes</SelectItem>
+                  <SelectItem value="15min">Every 15 Minutes</SelectItem>
+                  <SelectItem value="1h">Hourly</SelectItem>
+                  <SelectItem value="1d">Daily</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Preview */}
+            {getAlertPreview() && (
+              <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                <h3 className="font-medium mb-2">Preview</h3>
+                <p className="text-sm text-gray-400">{getAlertPreview()}</p>
+              </div>
+            )}
           </div>
+        </ScrollArea>
 
-          {/* Preview */}
-          {getAlertPreview() && (
-            <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
-              <h3 className="font-medium mb-2">Preview</h3>
-              <p className="text-sm text-gray-400">{getAlertPreview()}</p>
-            </div>
-          )}
-
+        <div className="mt-6 pt-4 border-t border-gray-800">
           <Button 
             className="w-full" 
             onClick={handleSubmit}
