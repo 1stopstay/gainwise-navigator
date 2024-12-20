@@ -15,19 +15,39 @@ export const useProfile = (userId: string | undefined) => {
         return null;
       }
       
-      const { data, error } = await supabase
+      // First try to get existing profile
+      const { data: existingProfile, error: fetchError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
       
-      if (error) {
-        console.error('Error fetching profile:', error);
-        throw error;
+      if (fetchError) {
+        console.error('Error fetching profile:', fetchError);
+        throw fetchError;
       }
       
-      console.log('Profile data retrieved:', data);
-      return data as Profile | null;
+      // If profile exists, return it
+      if (existingProfile) {
+        console.log('Existing profile found:', existingProfile);
+        return existingProfile as Profile;
+      }
+      
+      // If no profile exists, create one
+      console.log('No profile found, creating new profile for user:', userId);
+      const { data: newProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert({ id: userId })
+        .select()
+        .maybeSingle();
+        
+      if (createError) {
+        console.error('Error creating profile:', createError);
+        throw createError;
+      }
+      
+      console.log('New profile created:', newProfile);
+      return newProfile as Profile;
     },
     enabled: !!userId,
   });
