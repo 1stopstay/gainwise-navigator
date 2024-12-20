@@ -6,15 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface TradingStrategy {
-  id?: string;
-  user_id: string;
-  token_symbol: string;
-  purchase_price: number;
-  profit_goal: number;
-  status?: string;
-}
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -28,6 +19,7 @@ serve(async (req) => {
     );
 
     const { method } = req;
+    const url = new URL(req.url);
     
     console.log(`Processing ${method} request`);
 
@@ -113,7 +105,7 @@ serve(async (req) => {
 
     // Get strategies for user
     if (method === 'GET') {
-      const userId = new URL(req.url).searchParams.get('userId');
+      const userId = url.searchParams.get('userId');
       console.log('Fetching strategies for user:', userId);
 
       if (!userId) {
