@@ -1,7 +1,7 @@
 import { LogIn, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavigationMenu } from "@/components/ui/navigation-menu";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { NavigationLinks } from "./NavigationLinks";
@@ -9,14 +9,21 @@ import { MobileMenu } from "./MobileMenu";
 
 export default function Navigation() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-      setIsOpen(false); // Close mobile menu after clicking
+    if (location.pathname !== '/') {
+      navigate('/', { state: { scrollTo: sectionId } });
+    } else if (sectionId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
     }
+    setIsOpen(false); // Close mobile menu after clicking
   };
 
   const handleLoginClick = () => {
@@ -24,8 +31,11 @@ export default function Navigation() {
   };
 
   const handleLogoClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    navigate('/');
+    if (location.pathname !== '/') {
+      navigate('/');
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
