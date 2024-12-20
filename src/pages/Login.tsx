@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Lock, Eye, EyeOff, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,13 +17,33 @@ const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate('/profile');
+      }
+    };
+    
+    checkUser();
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        navigate('/profile');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
   const validatePassword = (password: string) => {
-    // Minimum 8 characters, at least one uppercase, one lowercase, one number
     const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     return re.test(password);
   };
@@ -32,7 +52,6 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Email validation
     if (!validateEmail(email)) {
       toast({
         title: "Invalid Email",
@@ -43,7 +62,6 @@ const Login = () => {
       return;
     }
 
-    // Password validation
     if (!validatePassword(password)) {
       toast({
         title: "Weak Password",
@@ -66,10 +84,7 @@ const Login = () => {
           },
         });
 
-        if (error) {
-          console.error("Sign Up Error:", error);
-          throw error;
-        }
+        if (error) throw error;
 
         toast({
           title: "Success",
@@ -81,10 +96,7 @@ const Login = () => {
           password,
         });
 
-        if (error) {
-          console.error("Login Error:", error);
-          throw error;
-        }
+        if (error) throw error;
 
         toast({
           title: "Success",
