@@ -1,21 +1,25 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import Profile from "./pages/Profile";
 import Login from "./pages/Login";
-import ProfitStrategies from "./pages/ProfitStrategies";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import Swap from "./pages/Swap";
 import SignalsAndAlerts from "./pages/SignalsAndAlerts";
+import ProfitStrategies from "./pages/ProfitStrategies";
+import Navigation from "./components/Navigation";
+import "./App.css";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={<><Navigation /><Index /></>} />
         <Route path="/login" element={<Login />} />
-        <Route path="/profit-strategies" element={<ProfitStrategies />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/settings" element={<Settings />} />
         <Route path="/swap" element={<Swap />} />
         <Route path="/signals" element={<SignalsAndAlerts />} />
+        <Route path="/profit-strategies" element={<ProfitStrategies />} />
       </Routes>
     </Router>
   );
