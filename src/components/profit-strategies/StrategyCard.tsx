@@ -29,7 +29,7 @@ export const StrategyCard = ({
         <div>
           <h3 className="text-lg font-semibold">{strategy.token_symbol}</h3>
           <p className="text-sm text-muted-foreground">
-            Entry: ${strategy.purchase_price.toLocaleString()}
+            Investment: ${strategy.purchase_price.toLocaleString()}
           </p>
           <p className="text-sm text-muted-foreground">
             Target: {strategy.profit_goal}x
