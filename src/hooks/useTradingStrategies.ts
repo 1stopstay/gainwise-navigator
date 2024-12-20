@@ -23,9 +23,10 @@ export const useTradingStrategies = (userId: string | undefined) => {
         throw new Error('No session found');
       }
 
+      // Use params instead of body for GET request
       const response = await supabase.functions.invoke('trading-strategies', {
         method: 'GET',
-        body: { userId }
+        params: { userId }
       });
 
       if (response.error) {
