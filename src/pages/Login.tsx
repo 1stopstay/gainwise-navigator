@@ -5,17 +5,63 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement login logic
-    console.log("Login attempt with:", { email, password });
+    setIsLoading(true);
+    console.log(`Attempting to ${isSignUp ? 'sign up' : 'login'} with:`, { email });
+
+    try {
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          },
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Please check your email to verify your account.",
+        });
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Successfully logged in!",
+        });
+        navigate("/profile");
+      }
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred during authentication",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBackToHome = () => {
@@ -41,7 +87,7 @@ const Login = () => {
       <Card className="w-full max-w-md mx-4 animate-fade-up glass-card backdrop-blur-md bg-white/5 border-white/10">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center gradient-text">
-            Welcome Back
+            {isSignUp ? "Create Account" : "Welcome Back"}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -55,6 +101,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10 bg-black/50 border-white/10 focus:border-primary glow"
                 required
+                disabled={isLoading}
               />
             </div>
             
@@ -67,11 +114,13 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="pl-10 pr-10 bg-black/50 border-white/10 focus:border-primary glow"
                 required
+                disabled={isLoading}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-2.5 text-primary hover:text-primary/80"
+                disabled={isLoading}
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5" />
@@ -84,25 +133,32 @@ const Login = () => {
             <Button
               type="submit"
               className="w-full bg-primary hover:bg-primary-dark transition-all duration-300 glow"
+              disabled={isLoading}
             >
-              Log In
+              {isLoading ? "Please wait..." : (isSignUp ? "Sign Up" : "Log In")}
             </Button>
 
             <div className="text-sm text-center space-y-2">
-              <a
-                href="#"
-                className="text-white/60 hover:text-primary transition-colors duration-200"
-              >
-                Forgot password?
-              </a>
-              <div className="text-white/60">
-                Don't have an account?{" "}
-                <a
-                  href="#"
-                  className="text-primary hover:underline transition-all duration-200"
+              {!isSignUp && (
+                <button
+                  type="button"
+                  onClick={() => navigate("/forgot-password")}
+                  className="text-white/60 hover:text-primary transition-colors duration-200"
+                  disabled={isLoading}
                 >
-                  Register now
-                </a>
+                  Forgot password?
+                </button>
+              )}
+              <div className="text-white/60">
+                {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+                <button
+                  type="button"
+                  onClick={() => setIsSignUp(!isSignUp)}
+                  className="text-primary hover:underline transition-all duration-200"
+                  disabled={isLoading}
+                >
+                  {isSignUp ? "Log in" : "Register now"}
+                </button>
               </div>
             </div>
 
@@ -119,6 +175,7 @@ const Login = () => {
               type="button"
               variant="outline"
               className="w-full border-white/10 hover:bg-primary/10 glow"
+              disabled={isLoading}
             >
               Connect Wallet
             </Button>
