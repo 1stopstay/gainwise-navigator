@@ -84,11 +84,37 @@ export default function Settings() {
   };
 
   const getNotificationPreferences = (): NotificationPreferences => {
-    if (!settings?.notification_preferences || typeof settings.notification_preferences === 'string') {
+    if (!settings?.notification_preferences) {
       return defaultNotificationPreferences;
     }
     
-    return settings.notification_preferences as NotificationPreferences;
+    // Handle the case where notification_preferences is a string
+    if (typeof settings.notification_preferences === 'string') {
+      try {
+        const parsed = JSON.parse(settings.notification_preferences);
+        if (typeof parsed === 'object' && parsed !== null) {
+          return {
+            signals: Boolean(parsed.signals),
+            profit_alerts: Boolean(parsed.profit_alerts),
+            general_updates: Boolean(parsed.general_updates)
+          };
+        }
+      } catch {
+        return defaultNotificationPreferences;
+      }
+    }
+    
+    // Handle the case where notification_preferences is already an object
+    if (typeof settings.notification_preferences === 'object' && settings.notification_preferences !== null) {
+      const prefs = settings.notification_preferences as Record<string, unknown>;
+      return {
+        signals: Boolean(prefs.signals),
+        profit_alerts: Boolean(prefs.profit_alerts),
+        general_updates: Boolean(prefs.general_updates)
+      };
+    }
+    
+    return defaultNotificationPreferences;
   };
 
   const handleNotificationToggle = (type: keyof NotificationPreferences) => {
