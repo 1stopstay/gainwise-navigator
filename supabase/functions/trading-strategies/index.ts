@@ -34,6 +34,11 @@ serve(async (req) => {
     // Create strategy
     if (method === 'POST') {
       const { token_symbol, purchase_price, profit_goal, user_id } = await req.json();
+      
+      if (!user_id) {
+        throw new Error('User ID is required');
+      }
+      
       console.log('Creating strategy:', { token_symbol, purchase_price, profit_goal, user_id });
 
       const { data, error } = await supabase
@@ -57,6 +62,11 @@ serve(async (req) => {
     // Update strategy
     if (method === 'PUT') {
       const { id, token_symbol, purchase_price, profit_goal, status } = await req.json();
+      
+      if (!id) {
+        throw new Error('Strategy ID is required');
+      }
+      
       console.log('Updating strategy:', { id, token_symbol, purchase_price, profit_goal, status });
 
       const { data, error } = await supabase
@@ -82,6 +92,11 @@ serve(async (req) => {
     // Delete strategy
     if (method === 'DELETE') {
       const { id } = await req.json();
+      
+      if (!id) {
+        throw new Error('Strategy ID is required');
+      }
+      
       console.log('Deleting strategy:', id);
       
       const { error } = await supabase
@@ -98,8 +113,7 @@ serve(async (req) => {
 
     // Get strategies for user
     if (method === 'GET') {
-      const url = new URL(req.url);
-      const userId = url.searchParams.get('userId');
+      const userId = new URL(req.url).searchParams.get('userId');
       console.log('Fetching strategies for user:', userId);
 
       if (!userId) {

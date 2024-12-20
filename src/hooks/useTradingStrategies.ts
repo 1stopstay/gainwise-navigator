@@ -25,7 +25,7 @@ export const useTradingStrategies = (userId: string | undefined) => {
 
       const response = await supabase.functions.invoke('trading-strategies', {
         method: 'GET',
-        params: { userId }
+        queryParams: { userId }
       });
 
       if (response.error) {
