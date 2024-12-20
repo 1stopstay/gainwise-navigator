@@ -12,18 +12,15 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-dark">
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile/settings" element={<Settings />} />
-          <Route path="/swap" element={<Swap />} />
-          <Route path="/signals" element={<SignalsAndAlerts />} />
-          <Route path="/profit-strategies" element={<ProfitStrategies />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<><Navigation /><Index /></>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/settings" element={<Settings />} />
+        <Route path="/swap" element={<Swap />} />
+        <Route path="/signals" element={<SignalsAndAlerts />} />
+        <Route path="/profit-strategies" element={<ProfitStrategies />} />
+      </Routes>
     </Router>
   );
 }

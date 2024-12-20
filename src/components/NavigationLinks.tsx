@@ -1,6 +1,6 @@
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "./ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { Scan } from "lucide-react";
+import { ArrowLeftRight } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface NavigationLinksProps {
@@ -66,8 +66,8 @@ export const NavigationLinks = ({ onItemClick, className }: NavigationLinksProps
           onKeyPress={(e) => e.key === 'Enter' && navigate('/swap')}
           tabIndex={0}
         >
-          <Scan className="w-4 h-4" />
-          <span>Crypto Scanner</span>
+          <ArrowLeftRight className="w-4 h-4" />
+          <span>Swap</span>
         </NavigationMenuLink>
       </NavigationMenuItem>
     </NavigationMenuList>

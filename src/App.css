@@ -40,23 +40,3 @@
 .read-the-docs {
   color: #888;
 }
-
-/* Auth UI Styles */
-.auth-container {
-  @apply w-full max-w-sm mx-auto space-y-4;
-}
-
-.auth-button {
-  @apply bg-primary hover:bg-primary-dark text-dark font-semibold py-3 px-4 rounded-lg transition-all duration-300 w-full flex items-center justify-center space-x-2 !important;
-}
-
-.auth-input {
-  @apply bg-black/50 border border-white/10 rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary text-white w-full placeholder-white/30 !important;
-}
-
-/* Override Supabase Auth UI styles */
-[data-theme="dark"] {
-  --colors-brand: #00ff73 !important;
-  --colors-brandAccent: #00cc5c !important;
-  --colors-inputBackground: transparent !important;
-}

@@ -1,14 +1,15 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import HowItWorks from "@/components/HowItWorks";
 import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
+import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
-export default function Index() {
+const Index = () => {
   const location = useLocation();
 
   useEffect(() => {
@@ -26,9 +27,14 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-dark">
-      <Hero />
+      <Navigation />
+      <div id="home">
+        <Hero />
+      </div>
       <Benefits />
-      <HowItWorks />
+      <div id="how-it-works">
+        <HowItWorks />
+      </div>
       <div id="features">
         <Features />
       </div>
@@ -39,4 +45,6 @@ export default function Index() {
       <Footer />
     </div>
   );
-}
+};
+
+export default Index;
