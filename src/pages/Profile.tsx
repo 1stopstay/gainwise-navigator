@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
 import ProfileSidebar from "@/components/profile/ProfileSidebar";
 import ProfileOverview from "@/components/profile/ProfileOverview";
 import { useProfile } from "@/hooks/useProfile";
@@ -20,12 +19,12 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-dark flex">
+    <div className="min-h-screen bg-dark">
       <ProfileSidebar profile={profile} />
       
       {/* Main Content */}
-      <div className="flex-1 pl-[250px]">
-        <div className="container mx-auto px-4 py-8">
+      <div className="pl-[250px] w-full">
+        <div className="container py-8">
           <div className="mb-8">
             <h1 className="text-4xl font-bold gradient-text mb-2">
               Dashboard
@@ -35,17 +34,7 @@ const Profile = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <Card className="glass-card p-6">
-              <div className="space-y-4">
-                {profile && <ProfileOverview profile={profile} />}
-              </div>
-            </Card>
-            <Card className="glass-card p-6">
-              <h2 className="text-xl font-semibold mb-4">Active Alerts</h2>
-              <AlertsList />
-            </Card>
-          </div>
+          {profile && <ProfileOverview profile={profile} />}
         </div>
       </div>
     </div>
