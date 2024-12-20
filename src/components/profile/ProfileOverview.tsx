@@ -1,8 +1,15 @@
 import { Card } from "@/components/ui/card";
 import { LineChart, Wallet, Bell, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { Database } from "@/integrations/supabase/types";
 
-const ProfileOverview = () => {
+type Profile = Database['public']['Tables']['profiles']['Row'];
+
+interface ProfileOverviewProps {
+  profile: Profile;
+}
+
+const ProfileOverview = ({ profile }: ProfileOverviewProps) => {
   const stats = [
     {
       icon: Wallet,
