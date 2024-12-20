@@ -1,108 +1,73 @@
 import { Card } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, ArrowDownRight, PauseCircle, Edit, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { Database } from "@/integrations/supabase/types";
+import { PauseCircle, Pencil, Trash2 } from "lucide-react";
+import { ProfitMilestones } from "./ProfitMilestones";
 
-type TradingStrategy = Database["public"]["Tables"]["trading_strategies"]["Row"];
-
-interface StrategyCardProps {
-  strategy: TradingStrategy;
-  onDelete?: (id: string) => void;
-  onEdit?: (strategy: TradingStrategy) => void;
-  onPause?: (id: string) => void;
+interface Strategy {
+  id: string;
+  token_symbol: string;
+  purchase_price: number;
+  profit_goal: number;
 }
 
-export const StrategyCard = ({ strategy, onDelete, onEdit, onPause }: StrategyCardProps) => {
-  // Simulated current profit calculation
-  const calculateCurrentProfit = (purchasePrice: number) => {
-    const mockCurrentPrice = purchasePrice * 1.15; // Simulating 15% increase
-    return ((mockCurrentPrice - purchasePrice) / purchasePrice) * 100;
-  };
+interface StrategyCardProps {
+  strategy: Strategy;
+  onDelete: (id: string) => void;
+  onEdit: (strategy: Strategy) => void;
+  onPause: (id: string) => void;
+}
 
-  const profit = calculateCurrentProfit(Number(strategy.purchase_price));
-  const isPositive = profit > 0;
-  const progress = Math.min((profit / Number(strategy.profit_goal)) * 100, 100);
-
+export const StrategyCard = ({
+  strategy,
+  onDelete,
+  onEdit,
+  onPause,
+}: StrategyCardProps) => {
   return (
-    <Card className={cn(
-      "glass-card p-6 border-white/10",
-      "hover:border-primary/30 transition-all duration-300",
-      "group"
-    )}>
-      <div className="flex justify-between items-start mb-4">
-        <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-          <ArrowUpRight className="w-6 h-6 text-primary" />
+    <Card className="glass-card p-6 border-white/10 space-y-6">
+      <div className="flex justify-between items-start">
+        <div>
+          <h3 className="text-lg font-semibold">{strategy.token_symbol}</h3>
+          <p className="text-sm text-muted-foreground">
+            Entry: ${strategy.purchase_price.toLocaleString()}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Target: {strategy.profit_goal}x
+          </p>
         </div>
-        <div className="flex gap-2">
-          <Button 
-            variant="ghost" 
+        <div className="flex space-x-2">
+          <Button
+            variant="ghost"
             size="icon"
-            className="text-gray-400 hover:text-yellow-400"
-            onClick={() => onPause?.(strategy.id)}
+            onClick={() => onPause(strategy.id)}
+            className="h-8 w-8"
           >
-            <PauseCircle className="w-4 h-4" />
+            <PauseCircle className="h-4 w-4" />
           </Button>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
-            className="text-gray-400 hover:text-blue-400"
-            onClick={() => onEdit?.(strategy)}
+            onClick={() => onEdit(strategy)}
+            className="h-8 w-8"
           >
-            <Edit className="w-4 h-4" />
+            <Pencil className="h-4 w-4" />
           </Button>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
-            className="text-gray-400 hover:text-red-400"
-            onClick={() => onDelete?.(strategy.id)}
+            onClick={() => onDelete(strategy.id)}
+            className="h-8 w-8 text-destructive"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      <h3 className="text-xl font-bold mb-2">{strategy.token_symbol}</h3>
-      
-      <div className="space-y-4">
-        <div className="space-y-2 text-sm text-gray-400">
-          <div className="flex justify-between">
-            <span>Purchase Price:</span>
-            <span className="font-medium text-white">
-              ${Number(strategy.purchase_price).toFixed(2)}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Profit Goal:</span>
-            <span className="font-medium text-white">
-              {Number(strategy.profit_goal)}%
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Current Profit:</span>
-            <span className={cn(
-              "flex items-center gap-1 font-medium",
-              isPositive ? "text-green-400" : "text-red-400"
-            )}>
-              {isPositive ? (
-                <ArrowUpRight className="w-3 h-3" />
-              ) : (
-                <ArrowDownRight className="w-3 h-3" />
-              )}
-              {Math.abs(profit).toFixed(2)}%
-            </span>
-          </div>
-        </div>
-        
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Progress</span>
-            <span>{progress.toFixed(0)}%</span>
-          </div>
-          <Progress value={progress} className="h-2" />
-        </div>
-      </div>
+      <ProfitMilestones 
+        strategy={strategy}
+        recoupInvestment={true}
+        recoupSteps={4}
+      />
     </Card>
   );
 };
