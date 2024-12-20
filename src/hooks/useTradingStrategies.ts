@@ -17,23 +17,19 @@ export const useTradingStrategies = (userId: string | undefined) => {
       if (!userId) return [];
       
       console.log('Fetching trading strategies for user:', userId);
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error('No session found');
+      const { data, error } = await supabase
+        .from('trading_strategies')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching strategies:', error);
+        throw error;
       }
 
-      const response = await supabase.functions.invoke(`trading-strategies?user_id=${userId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      if (response.error) {
-        throw response.error;
-      }
-
-      console.log('Fetched strategies:', response.data);
-      return response.data as TradingStrategy[];
+      console.log('Fetched strategies:', data);
+      return data as TradingStrategy[];
     },
     enabled: !!userId,
   });
@@ -49,19 +45,21 @@ export const useCreateTradingStrategy = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
       
-      const response = await supabase.functions.invoke('trading-strategies', {
-        method: 'POST',
-        body: {
+      const { data, error } = await supabase
+        .from('trading_strategies')
+        .insert({
           ...strategy,
           user_id: user.id,
-        },
-      });
+        })
+        .select()
+        .single();
 
-      if (response.error) {
-        throw response.error;
+      if (error) {
+        console.error('Error creating strategy:', error);
+        throw error;
       }
 
-      return response.data as TradingStrategy;
+      return data as TradingStrategy;
     },
     onSuccess: (data) => {
       if (data) {
@@ -85,13 +83,15 @@ export const useDeleteTradingStrategy = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
 
-      const response = await supabase.functions.invoke('trading-strategies', {
-        method: 'DELETE',
-        body: { id, user_id: user.id },
-      });
+      const { error } = await supabase
+        .from('trading_strategies')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
 
-      if (response.error) {
-        throw response.error;
+      if (error) {
+        console.error('Error deleting strategy:', error);
+        throw error;
       }
 
       return id;
@@ -117,16 +117,25 @@ export const useUpdateTradingStrategy = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
 
-      const response = await supabase.functions.invoke('trading-strategies', {
-        method: 'PUT',
-        body: { ...strategy, user_id: user.id },
-      });
+      const { data, error } = await supabase
+        .from('trading_strategies')
+        .update({
+          purchase_price: strategy.purchase_price,
+          profit_goal: strategy.profit_goal,
+          token_symbol: strategy.token_symbol,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', strategy.id)
+        .eq('user_id', user.id)
+        .select()
+        .single();
 
-      if (response.error) {
-        throw response.error;
+      if (error) {
+        console.error('Error updating strategy:', error);
+        throw error;
       }
 
-      return response.data;
+      return data;
     },
     onSuccess: (data) => {
       if (data) {
