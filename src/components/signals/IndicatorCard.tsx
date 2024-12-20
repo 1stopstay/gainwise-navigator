@@ -3,8 +3,10 @@ import { Switch } from "@/components/ui/switch";
 import { Activity } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useSignals } from "@/hooks/useSignals";
+import { useToast } from "@/hooks/use-toast";
 
 type IndicatorCardProps = {
+  id: string;
   name: string;
   value: number;
   status: string;
@@ -22,6 +24,7 @@ const statusColors = {
 };
 
 export const IndicatorCard = ({
+  id,
   name,
   value,
   status,
@@ -31,13 +34,27 @@ export const IndicatorCard = ({
   onToggle,
 }: IndicatorCardProps) => {
   const { updateSignal } = useSignals();
+  const { toast } = useToast();
 
   const handleToggle = async () => {
     try {
       console.log(`Toggling ${name} indicator to ${!isActive}`);
+      await updateSignal.mutateAsync({
+        id,
+        is_active: !isActive
+      });
       onToggle();
+      toast({
+        title: `${name} indicator ${!isActive ? 'enabled' : 'disabled'}`,
+        description: `The ${name} indicator has been ${!isActive ? 'enabled' : 'disabled'} successfully.`,
+      });
     } catch (error) {
       console.error(`Error toggling ${name} indicator:`, error);
+      toast({
+        title: "Error",
+        description: `Failed to toggle ${name} indicator. Please try again.`,
+        variant: "destructive",
+      });
     }
   };
 
