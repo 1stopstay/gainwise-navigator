@@ -15,10 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { useAlerts } from "@/hooks/useAlerts";
-import { Bell, Coins, LineChart, Mail, BellRing } from "lucide-react";
+import { Bell, Coins } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { TrendSelection } from "./TrendSelection";
+import { NotificationPreferences } from "./NotificationPreferences";
 
 type CreateAlertDialogProps = {
   open: boolean;
@@ -32,8 +33,7 @@ export const CreateAlertDialog = ({
   const { createAlert } = useAlerts();
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
-  const [indicator, setIndicator] = useState("");
-  const [condition, setCondition] = useState("");
+  const [selectedTrends, setSelectedTrends] = useState<string[]>([]);
   const [value, setValue] = useState("");
   const [isEnabled, setIsEnabled] = useState(true);
   const [notificationPreferences, setNotificationPreferences] = useState({
@@ -43,34 +43,39 @@ export const CreateAlertDialog = ({
   const [frequency, setFrequency] = useState("5min");
 
   const handleSubmit = async () => {
-    await createAlert.mutateAsync({
-      name,
-      symbol: symbol.toUpperCase(),
-      indicator,
-      condition,
-      value: Number(value),
-      is_active: isEnabled,
-      notification_preferences: notificationPreferences,
-    });
+    // Create an alert for each selected trend
+    await Promise.all(
+      selectedTrends.map((trend) =>
+        createAlert.mutateAsync({
+          name,
+          symbol: symbol.toUpperCase(),
+          indicator: trend,
+          condition: trend.includes("UP") || trend === "BULLISH" ? "ABOVE" : "BELOW",
+          value: Number(value),
+          is_active: isEnabled,
+          notification_preferences: notificationPreferences,
+        })
+      )
+    );
     
     onOpenChange(false);
     // Reset form
     setName("");
     setSymbol("");
-    setIndicator("");
-    setCondition("");
+    setSelectedTrends([]);
     setValue("");
     setIsEnabled(true);
   };
 
   const getAlertPreview = () => {
-    if (!symbol || !indicator) return null;
+    if (!symbol || selectedTrends.length === 0) return null;
     
-    const previewText = `We'll notify you when ${symbol.toUpperCase()} ${
-      condition === "ABOVE" ? "goes above" : "falls below"
-    } ${value || "your target"}`;
+    const trendDescriptions = selectedTrends.map(trend => {
+      const direction = trend.includes("UP") || trend === "BULLISH" ? "goes up" : "goes down";
+      return `${symbol.toUpperCase()} ${direction}${value ? ` past ${value}` : ''}`;
+    });
     
-    return previewText;
+    return `We'll notify you when ${trendDescriptions.join(" or ")}`;
   };
 
   return (
@@ -101,27 +106,16 @@ export const CreateAlertDialog = ({
             />
           </div>
 
-          {/* Alert Type */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <LineChart className="w-5 h-5 text-primary" />
-              <Label className="text-lg font-medium">What do you want to track?</Label>
-            </div>
-            <Select value={indicator} onValueChange={setIndicator}>
-              <SelectTrigger className="bg-background/50">
-                <SelectValue placeholder="Choose tracking type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="PRICE_UP">Price Up</SelectItem>
-                <SelectItem value="PRICE_DOWN">Price Down</SelectItem>
-                <SelectItem value="BULLISH">Bullish Signal</SelectItem>
-                <SelectItem value="BEARISH">Bearish Signal</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Trend Selection */}
+          <TrendSelection
+            selectedTrends={selectedTrends}
+            onTrendChange={setSelectedTrends}
+          />
 
           {/* Threshold */}
-          {(indicator === "PRICE_UP" || indicator === "PRICE_DOWN") && (
+          {selectedTrends.some(trend => 
+            trend === "PRICE_UP" || trend === "PRICE_DOWN"
+          ) && (
             <div className="space-y-4">
               <Label className="text-lg font-medium">Set Price Target</Label>
               <div className="space-y-2">
@@ -144,38 +138,10 @@ export const CreateAlertDialog = ({
           )}
 
           {/* Notification Preferences */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <BellRing className="w-5 h-5 text-primary" />
-              <Label className="text-lg font-medium">How should we alert you?</Label>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
-                  <Label>Email Notifications</Label>
-                </div>
-                <Switch
-                  checked={notificationPreferences.email}
-                  onCheckedChange={(checked) =>
-                    setNotificationPreferences((prev) => ({ ...prev, email: checked }))
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Bell className="w-4 h-4" />
-                  <Label>Push Notifications</Label>
-                </div>
-                <Switch
-                  checked={notificationPreferences.push}
-                  onCheckedChange={(checked) =>
-                    setNotificationPreferences((prev) => ({ ...prev, push: checked }))
-                  }
-                />
-              </div>
-            </div>
-          </div>
+          <NotificationPreferences
+            preferences={notificationPreferences}
+            onPreferencesChange={setNotificationPreferences}
+          />
 
           {/* Frequency */}
           <div className="space-y-4">
@@ -204,7 +170,7 @@ export const CreateAlertDialog = ({
           <Button 
             className="w-full" 
             onClick={handleSubmit}
-            disabled={createAlert.isPending || !symbol || !indicator}
+            disabled={createAlert.isPending || !symbol || selectedTrends.length === 0}
           >
             {createAlert.isPending ? "Creating..." : "Start Tracking"}
           </Button>
