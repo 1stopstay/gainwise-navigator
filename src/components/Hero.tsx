@@ -9,7 +9,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="min-h-screen flex items-center relative overflow-hidden pt-16">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Animated background with gradient and pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark/95 to-primary/10">
         <div className="absolute inset-0 opacity-10">
@@ -22,17 +22,17 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pt-20 pb-32 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container max-w-7xl mx-auto px-6 sm:px-8 py-16 lg:py-24 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="space-y-8 animate-fade-up">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-exo">
               Take Control of Your
-              <span className="gradient-text block">Crypto Profits</span>
+              <span className="gradient-text block mt-2">Crypto Profits</span>
             </h1>
-            <p className="text-xl text-gray-300">
+            <p className="text-xl text-gray-300 max-w-2xl">
               Smarter decisions. Simple tools. Secure profits.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 pt-4">
               <Button size="lg" className="bg-primary hover:bg-primary-dark text-dark font-semibold glow">
                 Get Started
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -48,7 +48,7 @@ export default function Hero() {
             </div>
           </div>
           
-          <div className="grid gap-4 md:grid-cols-2 animate-fade-up">
+          <div className="grid gap-6 md:grid-cols-2 animate-fade-up">
             <Card className="glass-card glow">
               <CardContent className="p-6 space-y-4">
                 <Zap className="h-8 w-8 text-primary" />
