@@ -1,17 +1,12 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
-import { ExternalLink, AlertCircle, ChevronDown, DollarSign, Target, BarChart3 } from "lucide-react";
+import { ExternalLink, AlertCircle, ChevronDown, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { calculateTokensToSell, calculateTargetX, TokenInvestment } from "@/utils/profitCalculations";
+import { MilestoneHeader } from "./milestone-components/MilestoneHeader";
+import { MilestoneTable } from "./milestone-components/MilestoneTable";
 
 interface ProfitMilestonesProps {
   strategy: {
@@ -92,41 +87,16 @@ export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSte
   const milestones = calculateMilestones();
   const nextMilestone = milestones[0];
   const finalMilestone = milestones[milestones.length - 1];
-  
-  // Calculate progress towards target (simplified for demo)
   const progress = Math.min((strategy.purchase_price / (strategy.purchase_price * strategy.profit_goal)) * 100, 100);
 
   return (
     <Card className="glass-card p-6 border-white/10">
       <div className="space-y-6">
-        {/* Header with key information */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-primary" />
-              <span className="font-semibold">{strategy.token_symbol}</span>
-            </div>
-            <span className="text-muted-foreground">|</span>
-            <div className="flex items-center gap-2">
-              <span>${strategy.purchase_price.toLocaleString()}</span>
-            </div>
-            <span className="text-muted-foreground">|</span>
-            <div className="flex items-center gap-2">
-              <Target className="h-4 w-4 text-primary" />
-              <span>{strategy.profit_goal}x</span>
-            </div>
-          </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <ExternalLink className="h-4 w-4 text-muted-foreground" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Click to trade on exchange</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <MilestoneHeader 
+          tokenSymbol={strategy.token_symbol}
+          purchasePrice={strategy.purchase_price}
+          profitGoal={strategy.profit_goal}
+        />
 
         {/* Progress bar */}
         <div className="space-y-2">
@@ -162,32 +132,7 @@ export const ProfitMilestones = ({ strategy, recoupInvestment = false, recoupSte
             View Step-by-Step Strategy
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Step</TableHead>
-                  <TableHead>Price Multiple</TableHead>
-                  <TableHead>Target Price</TableHead>
-                  <TableHead>Sell %</TableHead>
-                  <TableHead>Sell Amount ($)</TableHead>
-                  <TableHead>Remaining %</TableHead>
-                  <TableHead>Total Profit ($)</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {milestones.map((milestone) => (
-                  <TableRow key={milestone.step}>
-                    <TableCell>{milestone.step}</TableCell>
-                    <TableCell>{milestone.priceMultiple}</TableCell>
-                    <TableCell>${milestone.targetPrice}</TableCell>
-                    <TableCell>{milestone.sellPercentage}%</TableCell>
-                    <TableCell>${milestone.sellAmount}</TableCell>
-                    <TableCell>{milestone.remainingTokens}%</TableCell>
-                    <TableCell>${milestone.profitUSD}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <MilestoneTable milestones={milestones} />
           </CollapsibleContent>
         </Collapsible>
 
