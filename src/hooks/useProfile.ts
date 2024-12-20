@@ -8,15 +8,26 @@ export const useProfile = (userId: string | undefined) => {
   return useQuery({
     queryKey: ['profile', userId],
     queryFn: async () => {
-      if (!userId) return null;
+      console.log('Fetching profile for userId:', userId);
+      
+      if (!userId) {
+        console.log('No userId provided, returning null');
+        return null;
+      }
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
       
-      if (error) throw error;
-      return data as Profile;
+      if (error) {
+        console.error('Error fetching profile:', error);
+        throw error;
+      }
+      
+      console.log('Profile data retrieved:', data);
+      return data as Profile | null;
     },
     enabled: !!userId,
   });
@@ -30,13 +41,20 @@ export const useUpdateProfile = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
       
+      console.log('Updating profile for user:', user.id);
+      
       const { data, error } = await supabase
         .from('profiles')
         .upsert({ id: user.id, username })
         .select()
-        .single();
+        .maybeSingle();
         
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating profile:', error);
+        throw error;
+      }
+      
+      console.log('Profile updated successfully:', data);
       return data as Profile;
     },
     onSuccess: (data) => {
