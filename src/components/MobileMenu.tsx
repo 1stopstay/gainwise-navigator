@@ -12,6 +12,13 @@ interface MobileMenuProps {
 }
 
 export const MobileMenu = ({ isOpen, onOpenChange, onNavigate, onSectionClick }: MobileMenuProps) => {
+  // Get the install handler from the parent Navigation component
+  const handleInstallClick = async () => {
+    // This will trigger the beforeinstallprompt event in the Navigation component
+    const installEvent = new Event('beforeinstallprompt');
+    window.dispatchEvent(installEvent);
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
@@ -43,6 +50,7 @@ export const MobileMenu = ({ isOpen, onOpenChange, onNavigate, onSectionClick }:
             <Button 
               size="sm"
               className="w-full justify-start bg-primary hover:bg-primary-dark text-dark font-semibold"
+              onClick={handleInstallClick}
             >
               <Download className="w-4 h-4 mr-2" />
               Install App
