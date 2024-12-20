@@ -8,7 +8,7 @@ interface TrendSelectionProps {
 }
 
 export const TrendSelection = ({
-  selectedTrends,
+  selectedTrends = [],
   onTrendChange,
 }: TrendSelectionProps) => {
   const handleTrendChange = (trend: string, checked: boolean) => {

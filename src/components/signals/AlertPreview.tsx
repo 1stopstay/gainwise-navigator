@@ -4,7 +4,7 @@ interface AlertPreviewProps {
   value?: string;
 }
 
-export const AlertPreview = ({ symbol, selectedTrends, value }: AlertPreviewProps) => {
+export const AlertPreview = ({ symbol, selectedTrends = [], value }: AlertPreviewProps) => {
   if (!symbol || selectedTrends.length === 0) return null;
   
   const trendDescriptions = selectedTrends.map(trend => {

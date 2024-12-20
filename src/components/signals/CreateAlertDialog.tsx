@@ -25,9 +25,8 @@ export const CreateAlertDialog = ({
   const { createAlert, updateAlert } = useAlerts();
   const { toast } = useToast();
   const [symbol, setSymbol] = useState("");
-  const [indicator, setIndicator] = useState("");
-  const [condition, setCondition] = useState("");
-  const [value, setValue] = useState<number>(0);
+  const [selectedTrends, setSelectedTrends] = useState<string[]>([]);
+  const [value, setValue] = useState<string>("");
   const [notificationPreferences, setNotificationPreferences] = useState({
     email: true,
     push: true,
@@ -37,9 +36,8 @@ export const CreateAlertDialog = ({
   useEffect(() => {
     if (editingAlert) {
       setSymbol(editingAlert.symbol);
-      setIndicator(editingAlert.indicator);
-      setCondition(editingAlert.condition);
-      setValue(editingAlert.value);
+      setSelectedTrends([editingAlert.indicator]);
+      setValue(editingAlert.value.toString());
       setNotificationPreferences(editingAlert.notification_preferences);
     }
   }, [editingAlert]);
@@ -48,9 +46,11 @@ export const CreateAlertDialog = ({
     try {
       const alertData = {
         symbol,
-        indicator,
-        condition,
-        value,
+        name: `${symbol} Alert`,
+        is_active: true,
+        indicator: selectedTrends[0] || "",
+        condition: "ABOVE",
+        value: parseFloat(value) || 0,
         notification_preferences: notificationPreferences,
       };
 
@@ -75,9 +75,8 @@ export const CreateAlertDialog = ({
       onOpenChange(false);
       // Reset form
       setSymbol("");
-      setIndicator("");
-      setCondition("");
-      setValue(0);
+      setSelectedTrends([]);
+      setValue("");
       setNotificationPreferences({ email: true, push: true });
     } catch (error) {
       console.error("Error saving alert:", error);
@@ -93,33 +92,21 @@ export const CreateAlertDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <AlertFormHeader
-          onSubmit={handleSubmit}
-          onCancel={() => {
-            onOpenChange(false);
-            setSymbol("");
-            setIndicator("");
-            setCondition("");
-            setValue(0);
-            setNotificationPreferences({ email: true, push: true });
-          }}
+          title={editingAlert ? "Edit Alert" : "Create Alert"}
+          description="Set up your alert preferences"
         />
-        <TokenSelection symbol={symbol} setSymbol={setSymbol} />
+        <TokenSelection symbol={symbol} onSymbolChange={setSymbol} />
         <TrendSelection
-          indicator={indicator}
-          setIndicator={setIndicator}
-          condition={condition}
-          setCondition={setCondition}
-          value={value}
-          setValue={setValue}
+          selectedTrends={selectedTrends}
+          onTrendChange={setSelectedTrends}
         />
         <NotificationPreferences
           preferences={notificationPreferences}
-          setPreferences={setNotificationPreferences}
+          onPreferencesChange={setNotificationPreferences}
         />
         <AlertPreview
           symbol={symbol}
-          indicator={indicator}
-          condition={condition}
+          selectedTrends={selectedTrends}
           value={value}
         />
       </DialogContent>
