@@ -23,10 +23,9 @@ export const useTradingStrategies = (userId: string | undefined) => {
         throw new Error('No session found');
       }
 
-      const response = await supabase.functions.invoke('trading-strategies', {
+      const response = await supabase.functions.invoke(`trading-strategies?user_id=${userId}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        query: { user_id: userId }
       });
 
       if (response.error) {
