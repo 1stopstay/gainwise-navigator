@@ -26,7 +26,7 @@ export const useTradingStrategies = (userId: string | undefined) => {
       const response = await supabase.functions.invoke('trading-strategies', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        body: { user_id: userId } // Changed to use body instead of queryParams
+        query: { user_id: userId }
       });
 
       if (response.error) {

@@ -23,20 +23,21 @@ serve(async (req) => {
 
     // For GET requests
     if (method === 'GET') {
-      const { user_id } = await req.json().catch(() => ({}));
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get('user_id');
       
-      console.log('GET request user_id:', user_id);
+      console.log('GET request user_id:', userId);
       
-      if (!user_id) {
+      if (!userId) {
         throw new Error('User ID is required');
       }
 
-      console.log('Fetching strategies for user:', user_id);
+      console.log('Fetching strategies for user:', userId);
       
       const { data, error } = await supabase
         .from('trading_strategies')
         .select('*')
-        .eq('user_id', user_id)
+        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -48,7 +49,7 @@ serve(async (req) => {
 
     // For POST requests
     if (method === 'POST') {
-      const body = await req.json().catch(() => ({}));
+      const body = await req.json();
       const { token_symbol, purchase_price, profit_goal, user_id } = body;
       
       console.log('POST request data:', { token_symbol, purchase_price, profit_goal, user_id });
@@ -77,7 +78,8 @@ serve(async (req) => {
 
     // For DELETE requests
     if (method === 'DELETE') {
-      const { id, user_id } = await req.json().catch(() => ({}));
+      const body = await req.json();
+      const { id, user_id } = body;
       
       console.log('DELETE request data:', { id, user_id });
       
@@ -100,7 +102,7 @@ serve(async (req) => {
 
     // For PUT requests
     if (method === 'PUT') {
-      const body = await req.json().catch(() => ({}));
+      const body = await req.json();
       const { id, token_symbol, purchase_price, profit_goal, status, user_id } = body;
       
       console.log('PUT request data:', { id, token_symbol, purchase_price, profit_goal, status, user_id });
