@@ -39,7 +39,7 @@ const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
 
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/profile" },
-    { icon: Wallet, label: "Crypto Scanner", path: "/swap" },
+    { icon: Wallet, label: "Swap", path: "/swap" },
     { icon: LineChart, label: "Profit Strategies", path: "/profit-strategies" },
     { icon: Bell, label: "Signals & Alerts", path: "/signals" },
     { icon: Settings, label: "Settings", path: "/profile/settings" },

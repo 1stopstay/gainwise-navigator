@@ -67,7 +67,7 @@ export const NavigationLinks = ({ onItemClick, className }: NavigationLinksProps
           tabIndex={0}
         >
           <ArrowLeftRight className="w-4 h-4" />
-          <span>Crypto Scanner</span>
+          <span>Swap</span>
         </NavigationMenuLink>
       </NavigationMenuItem>
     </NavigationMenuList>
