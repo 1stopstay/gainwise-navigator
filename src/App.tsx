@@ -12,16 +12,20 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/settings" element={<Settings />} />
-        <Route path="/swap" element={<Swap />} />
-        <Route path="/signals" element={<SignalsAndAlerts />} />
-        <Route path="/profit-strategies" element={<ProfitStrategies />} />
-      </Routes>
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/settings" element={<Settings />} />
+            <Route path="/swap" element={<Swap />} />
+            <Route path="/signals" element={<SignalsAndAlerts />} />
+            <Route path="/profit-strategies" element={<ProfitStrategies />} />
+          </Routes>
+        </main>
+      </div>
     </Router>
   );
 }
