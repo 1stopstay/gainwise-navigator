@@ -7,7 +7,11 @@ import { cn } from "@/lib/utils";
 import { NavigationLinks } from "./NavigationLinks";
 import { MobileMenu } from "./MobileMenu";
 
-export default function Navigation() {
+interface NavigationProps {
+  className?: string;
+}
+
+export default function Navigation({ className }: NavigationProps) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -29,7 +33,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10">
+    <nav className={cn("fixed top-0 left-0 right-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10", className)}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Left: Logo/Name */}
