@@ -2,6 +2,7 @@ import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuL
 import { cn } from "@/lib/utils";
 import { ArrowLeftRight } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { SCROLL_IDS } from "@/lib/constants";
 
 interface NavigationLinksProps {
   onItemClick?: (sectionId: string) => void;
@@ -13,11 +14,12 @@ export const NavigationLinks = ({ onItemClick, className }: NavigationLinksProps
   const location = useLocation();
 
   const handleNavigation = (sectionId: string) => {
+    console.log(`Handling navigation to section: ${sectionId}`);
     if (location.pathname !== '/') {
-      // If we're not on the home page, navigate there first
+      console.log('Not on home page, navigating with state');
       navigate('/', { state: { scrollTo: sectionId } });
     } else {
-      // If we're already on the home page, just scroll
+      console.log('On home page, scrolling directly');
       const element = document.getElementById(sectionId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
@@ -27,10 +29,10 @@ export const NavigationLinks = ({ onItemClick, className }: NavigationLinksProps
   };
 
   const menuItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'how-it-works', label: 'How It Works' },
-    { id: 'features', label: 'Features' },
-    { id: 'pricing', label: 'Pricing' },
+    { id: SCROLL_IDS.HOME, label: 'Home' },
+    { id: SCROLL_IDS.HOW_IT_WORKS, label: 'How It Works' },
+    { id: SCROLL_IDS.FEATURES, label: 'Features' },
+    { id: SCROLL_IDS.PRICING, label: 'Pricing' },
   ];
 
   return (

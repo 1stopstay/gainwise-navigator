@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import HowItWorks from "@/components/HowItWorks";
@@ -7,33 +7,43 @@ import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
 import Footer from "@/components/Footer";
+import { SCROLL_IDS } from "@/lib/constants";
 
 const Index = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if we have a section to scroll to from navigation
-    const state = location.state as { scrollTo?: string };
+    console.log("Location state changed:", location.state);
+    const state = location.state as { scrollTo?: string } | undefined;
+
     if (state?.scrollTo) {
       const element = document.getElementById(state.scrollTo);
       if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 100); // Small delay to ensure components are rendered
+        console.log(`Scrolling to element: ${state.scrollTo}`);
+        element.scrollIntoView({ behavior: "smooth" });
+        // Clear the state after scrolling
+        navigate(location.pathname, { replace: true });
+      } else {
+        console.warn(`Element with ID '${state.scrollTo}' not found`);
       }
     }
-  }, [location]);
+  }, [location, navigate]);
 
   return (
     <div className="min-h-screen bg-dark">
-      <Hero />
+      <div id={SCROLL_IDS.HOME}>
+        <Hero />
+      </div>
       <Benefits />
-      <HowItWorks />
-      <div id="features">
+      <div id={SCROLL_IDS.HOW_IT_WORKS}>
+        <HowItWorks />
+      </div>
+      <div id={SCROLL_IDS.FEATURES}>
         <Features />
       </div>
       <Testimonials />
-      <div id="pricing">
+      <div id={SCROLL_IDS.PRICING}>
         <Pricing />
       </div>
       <Footer />

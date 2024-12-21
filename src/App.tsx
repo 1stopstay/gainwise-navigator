@@ -12,8 +12,8 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col">
-        <Navigation />
+      <div className="flex flex-col min-h-screen bg-dark">
+        <Navigation className="sticky top-0 z-50 bg-dark/80 backdrop-blur-lg border-b border-white/10" />
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Index />} />
