@@ -16,8 +16,6 @@ export const NavigationLinks = ({ onItemClick, className }: NavigationLinksProps
     if (location.pathname !== '/') {
       // If we're not on the home page, navigate there first
       navigate('/', { state: { scrollTo: sectionId } });
-    } else if (sectionId === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       // If we're already on the home page, just scroll
       const element = document.getElementById(sectionId);
