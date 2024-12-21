@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import HowItWorks from "@/components/HowItWorks";
@@ -10,32 +10,32 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if we have a section to scroll to from navigation
-    const state = location.state as { scrollTo?: string };
-    if (state?.scrollTo) {
-      const element = document.getElementById(state.scrollTo);
+    console.log("Index page mounted"); // Debug log
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
       if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 100); // Small delay to ensure components are rendered
+        element.scrollIntoView({ behavior: "smooth" });
       }
+    } else {
+      window.scrollTo(0, 0);
     }
   }, [location]);
 
   console.log("Rendering Index page"); // Debug log
 
   return (
-    <main className="min-h-screen bg-dark">
+    <main className="flex flex-col min-h-screen bg-dark">
       <Hero />
       <Benefits />
       <HowItWorks />
-      <div id="features">
-        <Features />
+      <Features />
+      <div className="container mx-auto px-4">
+        <Testimonials />
       </div>
-      <Testimonials />
-      <div id="pricing">
+      <div className="container mx-auto px-4 py-16">
         <Pricing />
       </div>
       <Footer />

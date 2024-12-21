@@ -15,26 +15,28 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="*"
-          element={
-            <>
-              <Navigation />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/profile/settings" element={<Settings />} />
-                <Route path="/swap" element={<Swap />} />
-                <Route path="/signals" element={<SignalsAndAlerts />} />
-                <Route path="/profit-strategies" element={<ProfitStrategies />} />
-                <Route path="/scanner" element={<CryptoScanner />} />
-              </Routes>
-            </>
-          }
-        />
-      </Routes>
+      <div className="min-h-screen bg-dark">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <>
+                <Navigation />
+                <Routes>
+                  <Route index element={<Index />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/profile/settings" element={<Settings />} />
+                  <Route path="/swap" element={<Swap />} />
+                  <Route path="/signals" element={<SignalsAndAlerts />} />
+                  <Route path="/profit-strategies" element={<ProfitStrategies />} />
+                  <Route path="/scanner" element={<CryptoScanner />} />
+                </Routes>
+              </>
+            }
+          />
+        </Routes>
+      </div>
     </Router>
   );
 }
