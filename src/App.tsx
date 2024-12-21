@@ -6,37 +6,21 @@ import Settings from "./pages/Settings";
 import Swap from "./pages/Swap";
 import SignalsAndAlerts from "./pages/SignalsAndAlerts";
 import ProfitStrategies from "./pages/ProfitStrategies";
-import CryptoScanner from "./pages/CryptoScanner";
 import Navigation from "./components/Navigation";
 import "./App.css";
 
 function App() {
-  console.log("Rendering App component"); // Debug log
-
   return (
     <Router>
-      <div className="min-h-screen bg-dark">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              <>
-                <Navigation />
-                <Routes>
-                  <Route index element={<Index />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/profile/settings" element={<Settings />} />
-                  <Route path="/swap" element={<Swap />} />
-                  <Route path="/signals" element={<SignalsAndAlerts />} />
-                  <Route path="/profit-strategies" element={<ProfitStrategies />} />
-                  <Route path="/scanner" element={<CryptoScanner />} />
-                </Routes>
-              </>
-            }
-          />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<><Navigation /><Index /></>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/settings" element={<Settings />} />
+        <Route path="/swap" element={<Swap />} />
+        <Route path="/signals" element={<SignalsAndAlerts />} />
+        <Route path="/profit-strategies" element={<ProfitStrategies />} />
+      </Routes>
     </Router>
   );
 }

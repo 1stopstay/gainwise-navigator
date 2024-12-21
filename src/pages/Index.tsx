@@ -1,45 +1,45 @@
 import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import HowItWorks from "@/components/HowItWorks";
 import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
+import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 const Index = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Index page mounted"); // Debug log
-    if (location.hash) {
-      const element = document.querySelector(location.hash);
+    // Check if we have a section to scroll to from navigation
+    const state = location.state as { scrollTo?: string };
+    if (state?.scrollTo) {
+      const element = document.getElementById(state.scrollTo);
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // Small delay to ensure components are rendered
       }
-    } else {
-      window.scrollTo(0, 0);
     }
   }, [location]);
 
-  console.log("Rendering Index page"); // Debug log
-
   return (
-    <main className="flex flex-col min-h-screen bg-dark">
+    <div className="min-h-screen bg-dark">
+      <Navigation />
       <Hero />
       <Benefits />
       <HowItWorks />
-      <Features />
-      <div className="container mx-auto px-4">
-        <Testimonials />
+      <div id="features">
+        <Features />
       </div>
-      <div className="container mx-auto px-4 py-16">
+      <Testimonials />
+      <div id="pricing">
         <Pricing />
       </div>
       <Footer />
-    </main>
+    </div>
   );
 };
 
